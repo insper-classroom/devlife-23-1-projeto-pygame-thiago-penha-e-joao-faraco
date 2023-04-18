@@ -38,7 +38,7 @@ class Tela_Inverno:
         self.imagem= pygame.transform.scale(self.imagem,(2000,409))
     
     def desenha_tela(self,window):
-        window.blit(self.imagem,(0,0))
+        window.blit(self.imagem,(-500,0))
         pygame.display.update()
     
 class Jogo:
