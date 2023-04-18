@@ -3,9 +3,9 @@ import pygame
 pygame.init()
 class Jogo:
     def __init__(self):
-        self.imagem = pygame.image.load('docs\imagens\Inverno_att.png')
-        self.imagem= pygame.transform.scale(self.imagem,(1313,409))
-        self.window = pygame.display.set_mode((1313,409))
+        self.imagem = pygame.image.load('docs/imagens/Outono.png')
+        self.imagem= pygame.transform.scale(self.imagem,(1000,500))
+        self.window = pygame.display.set_mode((1000,500))
 
     def desenha(self):
         self.window.fill((0,0,0))
