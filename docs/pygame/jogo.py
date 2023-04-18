@@ -1,7 +1,6 @@
 from classes import Jogo
 jogo=Jogo()
+jogo.loop()
 
-while jogo.atualiza_estado():
-    jogo.desenha()
 
     
