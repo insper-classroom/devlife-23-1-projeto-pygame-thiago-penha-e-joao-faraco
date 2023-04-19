@@ -36,6 +36,7 @@ class Tela_Inverno:
         self.imagem = pygame.image.load('docs/imagens/Inverno_att.png')
         self.imagem= pygame.transform.scale(self.imagem,(2500,409))
         self.imprime_x = -500
+
     
     def desenha_tela(self,window):
         window.blit(self.imagem,(self.imprime_x,0))
@@ -44,6 +45,8 @@ class Personagem():
     def __init__(self,window):
         self.posicao_jogador = [window.get_width()//2, 309]
         self.jogador = pygame.transform.scale((pygame.image.load('docs/imagens/personagem.png')),(50,50))
+        self.velocidade_x = 0
+        self.ajuste = 0
         self.window = window
     def desenha_jogador(self):
         self.window.blit(self.jogador,(self.posicao_jogador[0],self.posicao_jogador[1]))
@@ -60,10 +63,61 @@ class Jogo:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-                self.tela.imprime_x -= 10
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-                self.tela.imprime_x += 10
+            if self.tela.imprime_x > -1500 and self.tela.imprime_x < 0:
+                self.jogador.ajuste = 0
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RIGHT:
+                        self.jogador.velocidade_x -= 5
+                    if event.key == pygame.K_LEFT:
+                        self.jogador.velocidade_x += 5 
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_LEFT:
+                        self.jogador.velocidade_x -= 5
+                    if event.key == pygame.K_RIGHT:
+                        self.jogador.velocidade_x += 5
+            if self.tela.imprime_x <= -1500:
+                self.tela.imprime_x = -1500
+                self.jogador.velocidade_x = 0
+            if self.tela.imprime_x >= 0:
+                self.tela.imprime_x = 0
+                self.jogador.velocidade_x = 0
+            if self.tela.imprime_x <= -1500:
+                self.jogador.velocidade_x = 0
+                if self.jogador.ajuste >= 0 and self.jogador.ajuste < 500:
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_RIGHT:
+                            self.jogador.ajuste += 5
+                        if event.key == pygame.K_LEFT:
+                            self.jogador.ajuste -= 5
+                    if event.type == pygame.KEYUP:
+                        if event.key == pygame.K_LEFT:
+                            self.jogador.ajuste += 5
+                        if event.key == pygame.K_RIGHT:
+                            self.jogador.ajuste -= 5
+                if self.jogador.ajuste < 0:
+                    self.jogador.ajuste = 0
+                if self.jogador.ajuste > 500:
+                    self.jogador.ajuste = 500
+            if self.tela.imprime_x >= 0:
+                if self.jogador.ajuste <= -500 and self.jogador.ajuste >= 0:
+                    self.jogador.velocidade_x = 0
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_RIGHT:
+                            self.jogador.ajuste += 5
+                        if event.key == pygame.K_LEFT:
+                            self.jogador.ajuste -= 5
+                    if event.type == pygame.KEYUP:
+                        if event.key == pygame.K_LEFT:
+                            self.jogador.ajuste += 5
+                        if event.key == pygame.K_RIGHT:
+                            self.jogador.ajuste -= 5
+                if self.jogador.ajuste > 0:
+                    self.jogador.ajuste = 0
+                if self.jogador.ajuste < -500:
+                    self.jogador.ajuste = -500
+        self.jogador.posicao_jogador[0] += self.jogador.ajuste
+        self.tela.imprime_x += self.jogador.velocidade_x
+
         return True
 
     def desenha_inicio(self):
@@ -71,6 +125,7 @@ class Jogo:
         self.jogador.desenha_jogador()
         self.chao.desenha_chao(self.window)
         pygame.display.update()
+
     def loop(self):
         while self.atualiza_estado():
             self.desenha_inicio()
