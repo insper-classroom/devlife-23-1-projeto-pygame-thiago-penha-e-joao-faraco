@@ -36,10 +36,10 @@ class Tela_Inverno:
         pygame.init()
         self.imagem = pygame.image.load('docs/imagens/Inverno_att.png')
         self.imagem= pygame.transform.scale(self.imagem,(2000,409))
+        self.imprime_x = -500
     
     def desenha_tela(self,window):
-        window.blit(self.imagem,(-500,0))
-        pygame.display.update()
+        window.blit(self.imagem,(self.imprime_x,0))
 
 class Personagem():
     def __init__(self,window):
@@ -61,6 +61,12 @@ class Jogo:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                self.jogador.posicao_jogador[0] += 10
+                self.tela.imprime_x += 10
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                self.jogador.posicao_jogador[0] -= 10
+                self.tela.imprime_x -= 10
         return True
 
     def desenha_inicio(self):
@@ -68,11 +74,10 @@ class Jogo:
         self.chao.desenha_chao(self.window)
         self.jogador.desenha_jogador()
         pygame.display.update()
-   
+
     def loop(self):
-        self.desenha_inicio()
         while self.atualiza_estado():
-            pass
+            self.desenha_inicio()
         
 
     
