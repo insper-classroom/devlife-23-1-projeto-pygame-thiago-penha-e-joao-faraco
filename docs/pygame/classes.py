@@ -44,11 +44,18 @@ class Tela_Inverno:
         pygame.init()
         self.imagem = pygame.image.load('docs/imagens/Inverno_att.png')
         self.imagem= pygame.transform.scale(self.imagem,(3000,410))
+        #self.arvore=pygame.transform.scale(pygame.image.load('docs/imagens/Arvore_Inverno.png'),(100,100))
         self.imprime_x =0
         self.window=window
+        #self.arvores=[]       
+        #for i in range(10):
+            #posicao_x = random.randint(0, 2470)
+            #self.arvores.append([posicao_x,260])
     def desenha_tela(self):
         self.window.blit(self.imagem,(self.imprime_x,0))
-
+        #for arvore in self.arvores:
+          #  print(self.arvores)
+         #   self.imagem.blit(self.arvore,(arvore[0],arvore[1]))
 class Personagem(pygame.sprite.Sprite):
     def __init__(self,window,tela):
         pygame.sprite.Sprite.__init__(self)
