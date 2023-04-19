@@ -33,6 +33,12 @@ class Chao(pygame.sprite.Sprite):
         for i in range(self.quantidade+1):
             self.tela.blit(self.chao,(i*self.chao_largura,360))
                           
+class Tela_Inicio:
+    def __init__(self,window):
+        self.window=window
+    def desenha_Tela_Inicio(self):
+        self.window.fill((0,0,0))
+
 class Tela_Inverno:
     def __init__(self,window):
         pygame.init()
@@ -62,7 +68,7 @@ class Personagem(pygame.sprite.Sprite):
         #for sprite in self.plataforma.group.sprites():
          #   if pygame.sprite.collide_rect(self,sprite):  
          #       self.rect.bottom=sprite.rect.top
-        #self.window.blit(self.image,self.rect)
+        self.window.blit(self.image,self.rect)
         
 class Jogo:
     def __init__(self):
@@ -71,8 +77,10 @@ class Jogo:
         self.tela=Tela_Inverno(self.window)
         self.chao=Chao(self.tela.imagem)
         self.jogador = Personagem(self.window,self.tela)
+        self.tela_inicio=Tela_Inicio(self.window)
         self.plataforma=Plataforma(self.tela.imagem)
         self.direção=0
+        self.tela_atual=0
     def atualiza_estado(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -86,6 +94,8 @@ class Jogo:
                     self.direção='esquerda'
                 elif event.key==pygame.K_SPACE and self.jogador.rect.bottom>=360:
                         self.jogador.gravidade=-4
+                elif event.key==pygame.K_RETURN:
+                    self.tela_atual=1
             elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
                         self.jogador.velocidade_x+=2
@@ -95,13 +105,17 @@ class Jogo:
             self.jogador.rect.x+=self.jogador.velocidade_x
         else:
             self.tela.imprime_x -= self.jogador.velocidade_x 
+        
         return True
 
     def desenha_inicio(self):
-        self.tela.desenha_tela()
-        self.jogador.desenha_jogador()
-        self.chao.desenha_chao()
-        self.plataforma.desenha_plataforma()
+        if self.tela_atual==1:
+            self.tela.desenha_tela()
+            self.chao.desenha_chao()
+            self.plataforma.desenha_plataforma()
+            self.jogador.desenha_jogador()
+        elif self.tela_atual==0:
+           self.tela_inicio.desenha_Tela_Inicio()
         pygame.display.update()
 
     def loop(self):
