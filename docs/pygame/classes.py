@@ -1,7 +1,25 @@
 import pygame
 import random
+class Plataforma(pygame.sprite.Sprite):
+    def __init__(self,window):
+        pygame.sprite.Sprite.__init__(self)
+        self.plataforma=pygame.transform.scale(pygame.image.load('docs/imagens/plataforma.png'),(100,50))
+        self.plataforma_rect=self.plataforma.get_rect()
+        self.plataforma_altura=self.plataforma.get_height()
+        self.plataforma_largura=self.plataforma.get_width()
+        self.window=window
+        self.plataformas=[]
+        for i in range(5):
+            posicao_x=random.randint(0,2450)
+            posicao_y=random.randint(200,309)
+            self.plataformas.append([posicao_x,posicao_y])
+
+    def desenha_plataforma(self):
+            for plataforma in self.plataformas:
+                self.window.blit(self.plataforma,(plataforma[0],plataforma[1]))
+
 class Chao(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self,window):
         pygame.sprite.Sprite.__init__(self)
         self.chao=pygame.transform.scale(pygame.image.load('docs/imagens/chao inverno.png'),(50,50))
         self.chao_rect=self.chao.get_rect()
@@ -9,27 +27,14 @@ class Chao(pygame.sprite.Sprite):
         self.chao_largura=self.chao.get_width()
         self.pontos={}
         self.quantidade=0
-    def desenha_chao(self,window):
         self.quantidade+= window.get_width()//self.chao_largura
+        self.window=window 
+    def desenha_chao(self):
         for i in range(self.quantidade+1):
-            window.blit(self.chao,(i*self.chao_largura,360))
-            self.pontos[i]=(i*self.chao_largura,360)
-    def desenha_plataforma(self,window,quantidade):
-        i=0
-        while  i <=1 :
-            posicao_x=random.randint(0,1263)
-            posicao_y=random.randint(200,361-50)
-            for ponto in self.pontos.items():
-                out = True
-                if (posicao_x>=ponto[1][0] and posicao_x<=ponto[1][0]+self.chao_largura and posicao_y>=ponto[1][1] and posicao_y<=ponto[1][1]+self.chao_altura):
-                    out = False
-                    break
-            if out:
-                for j in range(5):
-                    window.blit(self.chao,(posicao_x+(j*self.chao_largura),posicao_y))
-                    self.pontos[quantidade+1+i]=(posicao_x+(j*self.chao_largura),posicao_y)
-                i+=1
-                              
+            self.window.blit(self.chao,(i*self.chao_largura,360))
+        for posicao in self.pontos.items():
+            self.window.blit(self.chao,(posicao[1][0],posicao[1][1]))
+                          
 class Tela_Inverno:
     def __init__(self):
         pygame.init()
@@ -57,8 +62,9 @@ class Jogo:
         self.window = pygame.display.set_mode((1000,409))
         self.window_largura=self.window.get_width()
         self.tela=Tela_Inverno()
-        self.chao=Chao()
+        self.chao=Chao(self.tela.imagem)
         self.jogador = Personagem(self.window)
+        self.plataforma=Plataforma(self.tela.imagem)
     def atualiza_estado(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -123,7 +129,8 @@ class Jogo:
     def desenha_inicio(self):
         self.tela.desenha_tela(self.window)
         self.jogador.desenha_jogador()
-        self.chao.desenha_chao(self.window)
+        self.chao.desenha_chao()
+        self.plataforma.desenha_plataforma()
         pygame.display.update()
 
     def loop(self):
