@@ -40,15 +40,23 @@ class Tela_Inverno:
     def desenha_tela(self,window):
         window.blit(self.imagem,(-500,0))
         pygame.display.update()
-    
+
+class Personagem():
+    def __init__(self,window):
+        self.posicao_jogador = [window.get_width()//2, 309]
+        self.jogador = pygame.transform.scale((pygame.image.load('docs/imagens/personagem.png')),(50,50))
+        self.window = window
+    def desenha_jogador(self):
+        self.window.blit(self.jogador,(self.posicao_jogador[0],self.posicao_jogador[1]))
+        
+
 class Jogo:
     def __init__(self):
         self.window = pygame.display.set_mode((1000,409))
         self.window_largura=self.window.get_width()
         self.tela=Tela_Inverno()
         self.chao=Chao()
-        self.posicao_jogador = [self.window.get_width()//2, 309]
-        self.jogador = pygame.transform.scale((pygame.image.load('docs/imagens/personagem.png')),(50,50))
+        self.jogador = Personagem(self.window)
     def atualiza_estado(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -58,7 +66,7 @@ class Jogo:
     def desenha_inicio(self):
         self.tela.desenha_tela(self.window)
         self.chao.desenha_chao(self.window)
-        self.window.blit(self.jogador,(self.posicao_jogador[0],self.posicao_jogador[1]))
+        self.jogador.desenha_jogador()
         pygame.display.update()
    
     def loop(self):
