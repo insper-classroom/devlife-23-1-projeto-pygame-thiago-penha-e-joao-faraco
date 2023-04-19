@@ -8,11 +8,13 @@ class Chao(pygame.sprite.Sprite):
         self.chao_altura=self.chao.get_height()
         self.chao_largura=self.chao.get_width()
         self.pontos={}
+        self.quantidade=0
     def desenha_chao(self,window):
-        quantidade= window.get_width()//self.chao_largura
-        for i in range(quantidade+1):
+        self.quantidade+= window.get_width()//self.chao_largura
+        for i in range(self.quantidade+1):
             window.blit(self.chao,(i*self.chao_largura,360))
             self.pontos[i]=(i*self.chao_largura,360)
+    def desenha_plataforma(self,window,quantidade):
         i=0
         while  i <=1 :
             posicao_x=random.randint(0,1263)
@@ -27,15 +29,12 @@ class Chao(pygame.sprite.Sprite):
                     window.blit(self.chao,(posicao_x+(j*self.chao_largura),posicao_y))
                     self.pontos[quantidade+1+i]=(posicao_x+(j*self.chao_largura),posicao_y)
                 i+=1
-                
-                
-                    
-
+                              
 class Tela_Inverno:
     def __init__(self):
         pygame.init()
         self.imagem = pygame.image.load('docs/imagens/Inverno_att.png')
-        self.imagem= pygame.transform.scale(self.imagem,(2000,409))
+        self.imagem= pygame.transform.scale(self.imagem,(2500,409))
         self.imprime_x = -500
     
     def desenha_tela(self,window):
@@ -62,19 +61,16 @@ class Jogo:
             if event.type == pygame.QUIT:
                 return False
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-                self.jogador.posicao_jogador[0] += 10
-                self.tela.imprime_x += 10
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-                self.jogador.posicao_jogador[0] -= 10
                 self.tela.imprime_x -= 10
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                self.tela.imprime_x += 10
         return True
 
     def desenha_inicio(self):
         self.tela.desenha_tela(self.window)
-        self.chao.desenha_chao(self.window)
         self.jogador.desenha_jogador()
+        self.chao.desenha_chao(self.window)
         pygame.display.update()
-
     def loop(self):
         while self.atualiza_estado():
             self.desenha_inicio()
