@@ -3,18 +3,21 @@ import random
 class Plataforma(pygame.sprite.Sprite):
     def __init__(self,tela):
         pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/plataforma.png'),(100,50))
+        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/plataforma.png'),(150,50))
         self.plataforma_altura=self.image.get_height()
         self.plataforma_largura=self.image.get_width()
         self.tela=tela
         self.plataformas=[]
         self.group=pygame.sprite.Group()
-        for i in range(5):
+        i=0
+        while i <5:
             posicao_x = random.randint(0, 2450)
             posicao_y = random.randint(200, 309)
             self.rect = self.image.get_rect(bottomright=(posicao_x, posicao_y))
             self.group.add(self)
+            #if not pygame.sprite.spritecollide(self,self.group,False):
             self.plataformas.append([posicao_x, posicao_y])
+            i+=1
 
     def desenha_plataforma(self):
             for plataforma in self.plataformas:
@@ -44,18 +47,17 @@ class Tela_Inverno:
         pygame.init()
         self.imagem = pygame.image.load('docs/imagens/Inverno_att.png')
         self.imagem= pygame.transform.scale(self.imagem,(3000,410))
-        #self.arvore=pygame.transform.scale(pygame.image.load('docs/imagens/Arvore_Inverno.png'),(100,100))
+        self.arvore=pygame.transform.scale(pygame.image.load('docs/imagens/Arvore_Inverno.png'),(100,100))
         self.imprime_x =0
         self.window=window
-        #self.arvores=[]       
-        #for i in range(10):
-            #posicao_x = random.randint(0, 2470)
-            #self.arvores.append([posicao_x,260])
+        self.arvores=[]       
+        for i in range(10):
+            posicao_x = random.randint(0, 2470)
+            self.arvores.append([posicao_x,260])
     def desenha_tela(self):
         self.window.blit(self.imagem,(self.imprime_x,0))
-        #for arvore in self.arvores:
-          #  print(self.arvores)
-         #   self.imagem.blit(self.arvore,(arvore[0],arvore[1]))
+        for arvore in self.arvores:
+            self.imagem.blit(self.arvore,(arvore[0],arvore[1]))
 class Personagem(pygame.sprite.Sprite):
     def __init__(self,window,tela):
         pygame.sprite.Sprite.__init__(self)
@@ -72,9 +74,10 @@ class Personagem(pygame.sprite.Sprite):
         self.rect.y+=self.gravidade
         if self.rect.bottom>=360:
             self.rect.bottom=360
-        #for sprite in self.plataforma.group.sprites():
-         #   if pygame.sprite.collide_rect(self,sprite):  
-         #       self.rect.bottom=sprite.rect.top
+        for sprite in self.plataforma.group.sprites():
+            if pygame.sprite.collide_rect(self,sprite):  
+                print('colidiu')
+                self.rect.bottom=sprite.rect.top
         self.window.blit(self.image,self.rect)
         
 class Jogo:
