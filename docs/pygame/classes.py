@@ -88,7 +88,7 @@ class Personagem(pygame.sprite.Sprite):
          #   if pygame.sprite.collide_mask(self,plataforma) and self.gravidade<=0 and self.rect.bottom>= plataforma.rect.bottom:
           #      self.rect.bottom=plataforma.rect.top 
            #     print('colide')
-        #self.window.blit(self.image,self.rect)
+        self.window.blit(self.image,self.rect)
         
 class Monstro(pygame.sprite.Sprite):
     def __init__(self):
@@ -164,7 +164,7 @@ class Jogo:
             self.tela.desenha_tela()
             self.chao.desenha_chao()
             self.jogador.desenha_jogador()
-            #self.grupo_monstro.draw(self.window)
+            self.grupo_monstro.draw(self.window)
         elif self.tela_atual==0:
            self.tela_inicio.desenha_Tela_Inicio()
         pygame.display.update()
