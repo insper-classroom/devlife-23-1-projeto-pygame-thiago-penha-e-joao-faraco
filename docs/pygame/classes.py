@@ -38,13 +38,7 @@ class Tela_Inverno(pygame.sprite.Sprite):
         self.imagem= pygame.transform.scale(self.imagem,(3000,410))
         self.arvore=pygame.transform.scale(pygame.image.load('docs/imagens/Arvore_Inverno.png'),(100,100))
         self.imprime_x =0
-        self.window=window
-        self.arvores=[]      
-
-        for i in range(10):
-            posicao_x = random.randint(0, 2470)
-            self.arvores.append([posicao_x,260])
-
+        self.window=window    
         self.arvores=[]       
         self.plataformaGroup=pygame.sprite.Group()
         self.posicao_plat=[]
@@ -134,10 +128,10 @@ class Jogo:
                 return False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
-                    self.jogador.velocidade_x +=10
+                    self.jogador.velocidade_x +=8
                     self.direção='direita'
                 elif event.key == pygame.K_LEFT:
-                    self.jogador.velocidade_x-=10
+                    self.jogador.velocidade_x-=8
                     self.direção='esquerda'
                 elif event.key==pygame.K_SPACE and self.jogador.rect.bottom>=360:
                         self.jogador.gravidade=-15
@@ -145,9 +139,9 @@ class Jogo:
                     self.tela_atual=1
             elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
-                        self.jogador.velocidade_x+=10
+                        self.jogador.velocidade_x+=8
                     elif event.key == pygame.K_RIGHT:
-                        self.jogador.velocidade_x -=2
+                        self.jogador.velocidade_x -=8
             for monstro in self.grupo_monstro:
                 monstro.rect.x -= self.jogador.velocidade_x
         if (self.tela.imprime_x<=-2000 and (self.direção=='direita' or self.jogador.rect.x>=self.window.get_width()//2)) or (self.tela.imprime_x>=0 and (self.direção=='esquerda' or self.jogador.rect.x<=self.window.get_width()//2 )):
