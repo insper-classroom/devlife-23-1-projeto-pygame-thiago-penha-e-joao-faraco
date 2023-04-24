@@ -45,7 +45,6 @@ class Tela_Inverno(pygame.sprite.Sprite):
             posicao_x = random.randint(0, 2470)
             self.arvores.append([posicao_x,260])
 
-
         self.arvores=[]       
         self.plataformaGroup=pygame.sprite.Group()
         self.posicao_plat=[]
@@ -62,9 +61,11 @@ class Tela_Inverno(pygame.sprite.Sprite):
                 self.plataformaGroup.add(plataforma)
    
     def desenha_tela(self):
+        self.window.blit(self.imagem,(self.imprime_x,0))
         for arvore in self.arvores:
             self.imagem.blit(self.arvore,(arvore[0],arvore[1]))
         self.plataformaGroup.draw(self.imagem)
+
 
 class Personagem(pygame.sprite.Sprite):
    
