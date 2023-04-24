@@ -81,16 +81,20 @@ class Personagem(pygame.sprite.Sprite):
         self.rect.y+=self.gravidade
         if self.rect.bottom>=360:
             self.rect.bottom=360
-        self.window.blit(self.image,self.rect)
+        #for plataforma in self.inverno.plataformaGroup:
+         #   if pygame.sprite.collide_mask(self,plataforma) and self.gravidade<=0 and self.rect.bottom>= plataforma.rect.bottom:
+          #      self.rect.bottom=plataforma.rect.top 
+           #     print('colide')
+        #self.window.blit(self.image,self.rect)
         
-class Monstro(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.tick=0
-        self.image = pygame.transform.scale(pygame.image.load('docs\imagens\monstroatt.png'),(50,50))
-        self.rect = self.image.get_rect()
-        self.rect.y = 310
-        self.rect.x = random.randint(50,2950)
+#class Monstro(pygame.sprite.Sprite):
+ #   def __init__(self):
+  #      super().__init__()
+   #     self.tick=0
+    #    self.image = pygame.transform.scale(pygame.image.load('docs\imagens\monstroatt.png'),(50,50))
+     #   self.rect = self.image.get_rect()
+      #  self.rect.y = 310
+       # self.rect.x = random.randint(50,2950)
 
     def movimenta_monstro(self):
         self.tick+=1
@@ -117,12 +121,11 @@ class Jogo:
         self.tela_atual=0
         self.grupo_monstro= pygame.sprite.Group()
         self.lista_monstro = []
-        for i in range(1):
-            self.grupo_monstro.add(Monstro())
-            print('gerou')            
+        #for i in range(1):
+            #self.grupo_monstro.add(Monstro())         
     def atualiza_estado(self):
         clock = pygame.time.Clock()
-
+        clock.tick(100)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
@@ -139,7 +142,7 @@ class Jogo:
                     self.tela_atual=1
             elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
-                        self.jogador.velocidade_x+=8
+                      self.jogador.velocidade_x+=8
                     elif event.key == pygame.K_RIGHT:
                         self.jogador.velocidade_x -=8
             for monstro in self.grupo_monstro:
@@ -157,7 +160,7 @@ class Jogo:
             self.tela.desenha_tela()
             self.chao.desenha_chao()
             self.jogador.desenha_jogador()
-            self.grupo_monstro.draw(self.window)
+            #self.grupo_monstro.draw(self.window)
         elif self.tela_atual==0:
            self.tela_inicio.desenha_Tela_Inicio()
         pygame.display.update()
