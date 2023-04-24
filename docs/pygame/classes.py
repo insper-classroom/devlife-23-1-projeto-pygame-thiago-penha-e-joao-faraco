@@ -45,14 +45,13 @@ class Tela_Inverno(pygame.sprite.Sprite):
         for i in range(10):
             posicao_x = random.randint(0, 2470)
             self.arvores.append([posicao_x,260])
-        for i in range(5):
+        i=0
+        while i<5:
             posicao_x = random.randint(0, 2450)
             posicao_y = random.randint(200, 250)
             plataforma=Plataforma(self.imagem,posicao_x,posicao_y)
-            for sprite in self.plataformaGroup:
-                if pygame.sprite.collide_mask(sprite,plataforma) == None:
-                    self.plataformaGroup.add(plataforma)
-            if len(self.plataformaGroup)==0:
+            if not pygame.sprite.spritecollide(plataforma, self.plataformaGroup, False, pygame.sprite.collide_mask):
+                i+=1
                 self.plataformaGroup.add(plataforma)
     
     def desenha_tela(self):
