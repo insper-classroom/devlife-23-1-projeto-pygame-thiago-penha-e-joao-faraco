@@ -75,7 +75,7 @@ class Personagem(pygame.sprite.Sprite):
         self.inverno=Tela_Inverno(self.window)
         self.vidas = 3
         self.mask=pygame.mask.from_surface(self.image)
-        self.font = pygame.font.Font('docs\imagens\PressStart2P.ttf', 20)
+        self.font = pygame.font.Font('docs/imagens/PressStart2P.ttf', 20)
 
     def desenha_jogador(self):
         self.coracao = self.font.render(chr(9829)*self.vidas,True,(255,0,0))
@@ -94,7 +94,7 @@ class Monstro(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.tick=0
-        self.image = pygame.transform.scale(pygame.image.load('docs\imagens\monstroatt.png'),(50,50))
+        self.image = pygame.transform.scale(pygame.image.load('docs/imagens/monstroatt.png'),(50,50))
         self.rect = self.image.get_rect()
         self.rect.y = 310
         self.rect.x = random.randint(50,2950)
