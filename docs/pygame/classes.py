@@ -73,10 +73,13 @@ class Personagem(pygame.sprite.Sprite):
         self.gravidade=0
         self.tela=tela
         self.inverno=Tela_Inverno(self.window)
-        #self.plataforma=Plataforma(self.tela)
+        self.vidas = 3
         self.mask=pygame.mask.from_surface(self.image)
+        self.font = pygame.font.Font('docs\imagens\PressStart2P.ttf', 20)
 
     def desenha_jogador(self):
+        self.coracao = self.font.render(chr(9829)*self.vidas,True,(255,0,0))
+        self.window.blit(self.coracao,(0,0))
         self.gravidade+=0.8
         self.rect.y+=self.gravidade
         if self.rect.bottom>=360:
@@ -91,18 +94,13 @@ class Monstro(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y = 310
         self.rect.x = random.randint(50,2950)
+        
+    def combate(self,jogador):
+        if self.rect.colliderect(jogador.rect):
+            print(jogador.vidas)
+            if jogador.vidas>0:
+                jogador.vidas -= 1
 
-    def movimenta_monstro(self):
-        self.tick+=1
-        if self.tick%5==0:
-            self.movimento = random.randint(0,2)
-            if self.movimento == 1:
-                # self.rect = self.rect.move(1,0)
-                self.rect.update(self.rect.x - 2,self.rect.y,50,50)
-                print(self.rect)
-            elif self.movimento == 2:
-                self.rect.update(self.rect.x - 2,self.rect.y,50,50)
-                print(self.rect)
 class Jogo:
     
     def __init__(self):
@@ -110,16 +108,16 @@ class Jogo:
         self.window = pygame.display.set_mode((1000,409))
         self.window_largura=self.window.get_width()
         self.tela=Tela_Inverno(self.window)
-        self.chao=Chao(self.tela.imagem)
+        self.chao=Chao(self.window)
         self.jogador = Personagem(self.window,self.tela)
         self.tela_inicio=Tela_Inicio(self.window)
         self.direção=0
         self.tela_atual=0
         self.grupo_monstro= pygame.sprite.Group()
         self.lista_monstro = []
-        for i in range(1):
+        for i in range(5):
             self.grupo_monstro.add(Monstro())
-            print('gerou')            
+
     def atualiza_estado(self):
         clock = pygame.time.Clock()
 
@@ -130,9 +128,11 @@ class Jogo:
                 if event.key == pygame.K_RIGHT:
                     self.jogador.velocidade_x +=8
                     self.direção='direita'
+                    # self.monstro.velocidade -= self.jogador.velocidade_x//2
                 elif event.key == pygame.K_LEFT:
-                    self.jogador.velocidade_x-=8
+                    self.jogador.velocidade_x+= -8
                     self.direção='esquerda'
+                    # self.monstro.velocidade += self.jogador.velocidade_x//2
                 elif event.key==pygame.K_SPACE and self.jogador.rect.bottom>=360:
                         self.jogador.gravidade=-15
                 elif event.key==pygame.K_RETURN:
@@ -140,16 +140,19 @@ class Jogo:
             elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
                         self.jogador.velocidade_x+=8
+                        # self.monstro.velocidade -= self.jogador.velocidade_x//2
                     elif event.key == pygame.K_RIGHT:
-                        self.jogador.velocidade_x -=8
-            for monstro in self.grupo_monstro:
-                monstro.rect.x -= self.jogador.velocidade_x
+                        self.jogador.velocidade_x += -8
+
+                        # self.monstro.velocidade += self.jogador.velocidade_x//2
         if (self.tela.imprime_x<=-2000 and (self.direção=='direita' or self.jogador.rect.x>=self.window.get_width()//2)) or (self.tela.imprime_x>=0 and (self.direção=='esquerda' or self.jogador.rect.x<=self.window.get_width()//2 )):
             self.jogador.rect.x+=self.jogador.velocidade_x
         else:
-            self.tela.imprime_x -= self.jogador.velocidade_x 
+            self.tela.imprime_x -= self.jogador.velocidade_x
+            for monstro in self.grupo_monstro:
+                monstro.rect.x -= self.jogador.velocidade_x
         for monstro in self.grupo_monstro:
-            monstro.movimenta_monstro()
+            monstro.combate(self.jogador)
         return True
 
     def desenha_inicio(self):
