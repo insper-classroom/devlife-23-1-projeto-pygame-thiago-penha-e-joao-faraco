@@ -74,7 +74,7 @@ class Personagem(pygame.sprite.Sprite):
         self.vidas = 3
         self.group=pygame.sprite.GroupSingle(self)
         self.mask=pygame.mask.from_surface(self.image)
-        self.font = pygame.font.Font('docs/imagens/PressStart2P.ttf', 20)
+        self.font = pygame.font.Font('docs/fontes/PressStart2P.ttf', 20)
         self.colide=False 
         self.maximo=360
         self.gravidade=0
@@ -141,12 +141,18 @@ class Jogo:
         self.grupo_monstro= pygame.sprite.Group()
         self.lista_monstro = []
         self.inverteu = False
+        self.tocou = False
+        self.monstro_morre = pygame.mixer.Sound('docs\sons\MonstroMorre.wav')
         for i in range(5):
             self.grupo_monstro.add(Monstro())
-
+        pygame.mixer_music.load('docs\sons\game_music.wav')
+        pygame.mixer_music.set_volume(0.2)
+        pygame.mixer_music.play(1000000000)
     def atualiza_estado(self):
         clock = pygame.time.Clock()
         clock.tick(100)
+        # if not self.tocou:
+        #     self.tocou = True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
@@ -155,14 +161,15 @@ class Jogo:
                     self.jogador.velocidade_x +=8
                     self.direcao='direita'
                     if self.inverteu:
-                        self.jogador.mask.invert()
+                        self.jogador.image = pygame.transform.flip(self.jogador.image, True, False)
                         self.inverteu = False
                     # self.monstro.velocidade -= self.jogador.velocidade_x//2
                 elif event.key == pygame.K_LEFT:
                     self.jogador.velocidade_x+= -8
                     self.direcao='esquerda'
-                    self.jogador.mask.invert()
-                    self.inverteu = True
+                    if not self.inverteu:
+                        self.jogador.image = pygame.transform.flip(self.jogador.image, True, False)
+                        self.inverteu = True
                     # self.monstro.velocidade += self.jogador.velocidade_x//2
                 elif event.key in (pygame.K_SPACE, pygame.K_UP) and (self.jogador.rect.bottom>=360 or self.jogador.colide==True):
                         self.jogador.gravidade=-15
@@ -185,6 +192,7 @@ class Jogo:
         for monstro in self.grupo_monstro:
             if monstro.combate(self.jogador,self,self.tela,self.window, self.grupo_monstro):
                 monstro.kill()
+                self.monstro_morre.play()
                 if self.jogador.maximo <= monstro.rect.top :
                     self.jogador.vidas += 1
                     self.jogador.gravidade = -20
