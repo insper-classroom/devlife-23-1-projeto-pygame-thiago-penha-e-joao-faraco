@@ -4,7 +4,7 @@ import random
 class Plataforma(pygame.sprite.Sprite):
     def __init__(self,tela,x,y):
         pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/plataforma.png'),(150,50))
+        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/plataforma.png'),(150,50)).convert_alpha()
         self.rect=self.image.get_rect()
         self.rect.topleft=(x,y)
         self.plataforma_altura=self.image.get_height()
@@ -34,7 +34,7 @@ class Tela_Inverno(pygame.sprite.Sprite):
     
     def __init__(self,window):
         pygame.sprite.Sprite.__init__(self)
-        self.imagem = pygame.image.load('docs/imagens/Inverno_att.png')
+        self.imagem = pygame.image.load('docs/imagens/Inverno_att.png').convert_alpha()
         self.imagem= pygame.transform.scale(self.imagem,(3000,410))
         self.arvore=pygame.transform.scale(pygame.image.load('docs/imagens/Arvore_Inverno.png'),(100,100))
         self.imprime_x =0
@@ -48,35 +48,36 @@ class Tela_Inverno(pygame.sprite.Sprite):
         i=0
         while i<5:
             posicao_x = random.randint(0, 2450)
-            posicao_y = random.randint(200, 250)
+            posicao_y = random.randint(200,250)
             plataforma=Plataforma(self.imagem,posicao_x,posicao_y)
             if not pygame.sprite.spritecollide(plataforma, self.plataformaGroup, False, pygame.sprite.collide_mask):
                 i+=1
                 self.plataformaGroup.add(plataforma)
-   
+
     def desenha_tela(self):
         self.window.blit(self.imagem,(self.imprime_x,0))
         for arvore in self.arvores:
             self.imagem.blit(self.arvore,(arvore[0],arvore[1]))
-        self.plataformaGroup.draw(self.imagem)
-
+        self.plataformaGroup.draw(self.window)
 
 class Personagem(pygame.sprite.Sprite):
    
     def __init__(self,window,tela):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.transform.scale((pygame.image.load('docs/imagens/personagem.png')),(50,50))
+        self.platafroma_image=pygame.transform.scale(pygame.image.load('docs/imagens/plataforma.png'),(150,50)).convert_alpha()
+        self.image = pygame.transform.scale((pygame.image.load('docs/imagens/personagem.png')),(50,50)).convert_alpha()
         self.velocidade_x = 0
         self.ajuste = 0
         self.window = window
         self.rect=self.image.get_rect(bottomright=(self.window.get_width()//2, 360))
-        self.gravidade=0
         self.tela=tela
-        self.inverno=Tela_Inverno(self.window)
         self.vidas = 3
+        self.group=pygame.sprite.GroupSingle(self)
         self.mask=pygame.mask.from_surface(self.image)
         self.font = pygame.font.Font('docs/imagens/PressStart2P.ttf', 20)
-
+        self.colide=False 
+        self.maximo=360
+        self.gravidade=0
     def desenha_jogador(self):
         self.coracao = self.font.render(chr(9829)*self.vidas,True,(255,0,0))
         self.window.blit(self.coracao,(0,0))
@@ -84,10 +85,20 @@ class Personagem(pygame.sprite.Sprite):
         self.rect.y+=self.gravidade
         if self.rect.bottom>=360:
             self.rect.bottom=360
-        #for plataforma in self.inverno.plataformaGroup:
-         #   if pygame.sprite.collide_mask(self,plataforma) and self.gravidade<=0 and self.rect.bottom>= plataforma.rect.bottom:
-          #      self.rect.bottom=plataforma.rect.top 
-           #     print('colide')
+            self.maximo=360
+        if self.rect.bottom<self.maximo:
+            self.maximo=self.rect.bottom
+        for plataforma in self.tela.plataformaGroup:
+            plataforma_mask=pygame.mask.from_surface(self.platafroma_image)
+            plataforma_group= pygame.sprite.GroupSingle(plataforma)
+            if pygame.sprite.spritecollide(self.group.sprite,plataforma_group,False,pygame.sprite.collide_mask) and self.gravidade>=0 and self.maximo<=plataforma.rect.top:
+                self.rect.bottom=plataforma.rect.top+10
+                self.maximo=plataforma.rect.top-10
+                self.gravidade=0
+                self.colide=True 
+                break
+            else:
+                self.colide=False
         self.window.blit(self.image,self.rect)
         
 class Monstro(pygame.sprite.Sprite):
@@ -101,7 +112,6 @@ class Monstro(pygame.sprite.Sprite):
         
     def combate(self,jogador):
         if self.rect.colliderect(jogador.rect):
-            print(jogador.vidas)
             if jogador.vidas>0:
                 jogador.vidas -= 1
 
@@ -112,7 +122,7 @@ class Jogo:
         self.window = pygame.display.set_mode((1000,409))
         self.window_largura=self.window.get_width()
         self.tela=Tela_Inverno(self.window)
-        self.chao=Chao(self.window)
+        self.chao=Chao(self.tela.imagem)
         self.jogador = Personagem(self.window,self.tela)
         self.tela_inicio=Tela_Inicio(self.window)
         self.direção=0
@@ -132,29 +142,27 @@ class Jogo:
                 if event.key == pygame.K_RIGHT:
                     self.jogador.velocidade_x +=8
                     self.direção='direita'
-                    # self.monstro.velocidade -= self.jogador.velocidade_x//2
                 elif event.key == pygame.K_LEFT:
                     self.jogador.velocidade_x+= -8
                     self.direção='esquerda'
-                    # self.monstro.velocidade += self.jogador.velocidade_x//2
-                elif event.key==pygame.K_SPACE and self.jogador.rect.bottom>=360:
+                elif event.key==pygame.K_SPACE and (self.jogador.rect.bottom>=360 or self.jogador.colide==True):
                         self.jogador.gravidade=-15
                 elif event.key==pygame.K_RETURN:
                     self.tela_atual=1
             elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
                         self.jogador.velocidade_x+=8
-                        # self.monstro.velocidade -= self.jogador.velocidade_x//2
                     elif event.key == pygame.K_RIGHT:
                         self.jogador.velocidade_x += -8
 
-                        # self.monstro.velocidade += self.jogador.velocidade_x//2
         if (self.tela.imprime_x<=-2000 and (self.direção=='direita' or self.jogador.rect.x>=self.window.get_width()//2)) or (self.tela.imprime_x>=0 and (self.direção=='esquerda' or self.jogador.rect.x<=self.window.get_width()//2 )):
             self.jogador.rect.x+=self.jogador.velocidade_x
         else:
             self.tela.imprime_x -= self.jogador.velocidade_x
             for monstro in self.grupo_monstro:
                 monstro.rect.x -= self.jogador.velocidade_x
+            for plataforma in self.tela.plataformaGroup:
+                plataforma.rect.x-=self.jogador.velocidade_x
         for monstro in self.grupo_monstro:
             monstro.combate(self.jogador)
         return True
