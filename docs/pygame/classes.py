@@ -99,11 +99,21 @@ class Monstro(pygame.sprite.Sprite):
         self.rect.y = 310
         self.rect.x = random.randint(50,2950)
         
-    def combate(self,jogador):
+    def combate(self,jogador, jogo,tela,window,grupo_monstro):
         if self.rect.colliderect(jogador.rect):
             print(jogador.vidas)
-            if jogador.vidas>0:
-                jogador.vidas -= 1
+            # if jogador.vidas>0:
+            jogador.vidas -= 1
+            if (tela.imprime_x<=-2000 and (jogo.direcao=='direita' or jogador.rect.x>=window.get_width()//2)) or (tela.imprime_x>=0 and (jogo.direcao=='esquerda' or jogador.rect.x<=window.get_width()//2 )):
+                jogador.rect.x -= jogador.velocidade_x 
+                for monstrin in grupo_monstro:
+                    monstrin.rect.x -= jogador.velocidade_x
+            else:
+                tela.imprime_x += jogador.velocidade_x
+            return True
+        return False
+
+
 
 class Jogo:
     
@@ -115,7 +125,7 @@ class Jogo:
         self.chao=Chao(self.window)
         self.jogador = Personagem(self.window,self.tela)
         self.tela_inicio=Tela_Inicio(self.window)
-        self.direção=0
+        self.direcao=0
         self.tela_atual=0
         self.grupo_monstro= pygame.sprite.Group()
         self.lista_monstro = []
@@ -131,13 +141,13 @@ class Jogo:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
                     self.jogador.velocidade_x +=8
-                    self.direção='direita'
+                    self.direcao='direita'
                     # self.monstro.velocidade -= self.jogador.velocidade_x//2
                 elif event.key == pygame.K_LEFT:
                     self.jogador.velocidade_x+= -8
-                    self.direção='esquerda'
+                    self.direcao='esquerda'
                     # self.monstro.velocidade += self.jogador.velocidade_x//2
-                elif event.key==pygame.K_SPACE and self.jogador.rect.bottom>=360:
+                elif event.key in (pygame.K_SPACE, pygame.K_UP) and self.jogador.rect.bottom>=360:
                         self.jogador.gravidade=-15
                 elif event.key==pygame.K_RETURN:
                     self.tela_atual=1
@@ -147,16 +157,22 @@ class Jogo:
                         # self.monstro.velocidade -= self.jogador.velocidade_x//2
                     elif event.key == pygame.K_RIGHT:
                         self.jogador.velocidade_x += -8
-
                         # self.monstro.velocidade += self.jogador.velocidade_x//2
-        if (self.tela.imprime_x<=-2000 and (self.direção=='direita' or self.jogador.rect.x>=self.window.get_width()//2)) or (self.tela.imprime_x>=0 and (self.direção=='esquerda' or self.jogador.rect.x<=self.window.get_width()//2 )):
+        if (self.tela.imprime_x<=-2000 and (self.direcao=='direita' or self.jogador.rect.x>=self.window.get_width()//2)) or (self.tela.imprime_x>=0 and (self.direcao=='esquerda' or self.jogador.rect.x<=self.window.get_width()//2 )):
             self.jogador.rect.x+=self.jogador.velocidade_x
         else:
             self.tela.imprime_x -= self.jogador.velocidade_x
             for monstro in self.grupo_monstro:
                 monstro.rect.x -= self.jogador.velocidade_x
         for monstro in self.grupo_monstro:
-            monstro.combate(self.jogador)
+            if monstro.combate(self.jogador,self,self.tela,self.window, self.grupo_monstro):
+                monstro.kill()
+                if self.jogador.rect.bottom <= monstro.rect.top :
+                    self.jogador.vidas += 1
+                for monstrengo in self.grupo_monstro:
+                    monstrengo.rect.x += self.jogador.velocidade_x
+            # else: 
+            #     print(monstro.rect)
         return True
 
     def desenha_inicio(self):
