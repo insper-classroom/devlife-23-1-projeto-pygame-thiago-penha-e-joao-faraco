@@ -46,9 +46,9 @@ class Tela_Inverno(pygame.sprite.Sprite):
             posicao_x = random.randint(0, 2470)
             self.arvores.append([posicao_x,260])
         i=0
-        while i<5:
+        while i<8:
             posicao_x = random.randint(0, 2450)
-            posicao_y = random.randint(200,250)
+            posicao_y = random.randint(150,250)
             plataforma=Plataforma(self.imagem,posicao_x,posicao_y)
             if not pygame.sprite.spritecollide(plataforma, self.plataformaGroup, False, pygame.sprite.collide_mask):
                 i+=1
@@ -140,6 +140,7 @@ class Jogo:
         self.tela_atual=0
         self.grupo_monstro= pygame.sprite.Group()
         self.lista_monstro = []
+        self.inverteu = False
         for i in range(5):
             self.grupo_monstro.add(Monstro())
 
@@ -153,12 +154,17 @@ class Jogo:
                 if event.key == pygame.K_RIGHT:
                     self.jogador.velocidade_x +=8
                     self.direcao='direita'
+                    if self.inverteu:
+                        self.jogador.mask.invert()
+                        self.inverteu = False
                     # self.monstro.velocidade -= self.jogador.velocidade_x//2
                 elif event.key == pygame.K_LEFT:
                     self.jogador.velocidade_x+= -8
                     self.direcao='esquerda'
+                    self.jogador.mask.invert()
+                    self.inverteu = True
                     # self.monstro.velocidade += self.jogador.velocidade_x//2
-                elif event.key in (pygame.K_SPACE, pygame.K_UP) and self.jogador.rect.bottom>=360:
+                elif event.key in (pygame.K_SPACE, pygame.K_UP) and (self.jogador.rect.bottom>=360 or self.jogador.colide==True):
                         self.jogador.gravidade=-15
                 elif event.key==pygame.K_RETURN:
                     self.tela_atual=1
@@ -179,8 +185,9 @@ class Jogo:
         for monstro in self.grupo_monstro:
             if monstro.combate(self.jogador,self,self.tela,self.window, self.grupo_monstro):
                 monstro.kill()
-                if self.jogador.rect.bottom <= monstro.rect.top :
+                if self.jogador.maximo <= monstro.rect.top :
                     self.jogador.vidas += 1
+                    self.jogador.gravidade = -20
                 for monstrengo in self.grupo_monstro:
                     monstrengo.rect.x += self.jogador.velocidade_x
             # else: 
