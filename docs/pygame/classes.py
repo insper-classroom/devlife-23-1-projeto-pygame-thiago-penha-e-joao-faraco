@@ -1,15 +1,20 @@
 import copy
 import pygame
 import random
+class Coin(pygame.sprite.Sprite):
+    def __init__(self,x,y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/coin_2.png'),(25,25)).convert_alpha()
+        self.contador=pygame.transform.scale(pygame.image.load('docs/imagens/coin_2.png'),(50,50)).convert_alpha()
+        self.rect=self.image.get_rect()
+        self.rect.topleft=(x,y)
+    
 class Plataforma(pygame.sprite.Sprite):
-    def __init__(self,tela,x,y):
+    def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
         self.image=pygame.transform.scale(pygame.image.load('docs/imagens/plataforma.png'),(150,50)).convert_alpha()
         self.rect=self.image.get_rect()
         self.rect.topleft=(x,y)
-        self.plataforma_altura=self.image.get_height()
-        self.plataforma_largura=self.image.get_width()
-        self.tela=tela
 
 class Chao(pygame.sprite.Sprite):
     def __init__(self,tela):
@@ -32,16 +37,21 @@ class Tela_Inicio:
 
 class Tela_Inverno(pygame.sprite.Sprite):
     
-    def __init__(self,window):
+    def __init__(self,window,fonte):
         pygame.sprite.Sprite.__init__(self)
+        
         self.imagem = pygame.image.load('docs/imagens/Inverno_att.png').convert_alpha()
         self.imagem= pygame.transform.scale(self.imagem,(3000,410))
         self.arvore=pygame.transform.scale(pygame.image.load('docs/imagens/Arvore_Inverno.png'),(100,100))
+        self.moeda_contadora=pygame.transform.scale(pygame.image.load('docs/imagens/coin_2.png'),(50,50)).convert_alpha()
         self.imprime_x =0
         self.window=window    
         self.arvores=[]       
         self.plataformaGroup=pygame.sprite.Group()
         self.posicao_plat=[]
+        self.coinGroup=pygame.sprite.Group()
+        self.fonte=fonte
+        self.contador=0
         for i in range(10):
             posicao_x = random.randint(0, 2470)
             self.arvores.append([posicao_x,260])
@@ -49,23 +59,35 @@ class Tela_Inverno(pygame.sprite.Sprite):
         while i<8:
             posicao_x = random.randint(0, 2450)
             posicao_y = random.randint(150,250)
-            plataforma=Plataforma(self.imagem,posicao_x,posicao_y)
+            plataforma=Plataforma(posicao_x,posicao_y)
             if not pygame.sprite.spritecollide(plataforma, self.plataformaGroup, False, pygame.sprite.collide_mask):
                 i+=1
                 self.plataformaGroup.add(plataforma)
+        j=0
+        while j<10:
+            posicao_x = random.randint(0, 2450)
+            posicao_y = random.randint(100,330)
+            coin=Coin(posicao_x,posicao_y)
+            if not pygame.sprite.spritecollide(coin, self.coinGroup, False, pygame.sprite.collide_mask) and not pygame.sprite.spritecollide(coin, self.plataformaGroup, False, pygame.sprite.collide_mask):
+                j+=1
+                self.coinGroup.add(coin)
 
     def desenha_tela(self):
         self.window.blit(self.imagem,(self.imprime_x,0))
         for arvore in self.arvores:
             self.imagem.blit(self.arvore,(arvore[0],arvore[1]))
         self.plataformaGroup.draw(self.window)
-
+        self.coinGroup.draw(self.window)
+        self.window.blit(self.moeda_contadora,(900,20))
+        self.contador_imagem=self.fonte.render(str(self.contador),True,(0,0,0))
+        self.window.blit(self.contador_imagem,(960,35))
 class Personagem(pygame.sprite.Sprite):
    
-    def __init__(self,window,tela):
+    def __init__(self,window,tela,fonte):
         pygame.sprite.Sprite.__init__(self)
         self.platafroma_image=pygame.transform.scale(pygame.image.load('docs/imagens/plataforma.png'),(150,50)).convert_alpha()
         self.image = pygame.transform.scale((pygame.image.load('docs/imagens/personagem.png')),(50,50)).convert_alpha()
+        self.mask=pygame.mask.from_surface(self.image)
         self.velocidade_x = 0
         self.ajuste = 0
         self.window = window
@@ -73,13 +95,12 @@ class Personagem(pygame.sprite.Sprite):
         self.tela=tela
         self.vidas = 3
         self.group=pygame.sprite.GroupSingle(self)
-        self.mask=pygame.mask.from_surface(self.image)
-        self.font = pygame.font.Font('docs/imagens/PressStart2P.ttf', 20)
         self.colide=False 
         self.maximo=360
         self.gravidade=0
+        self.fonte=fonte
     def desenha_jogador(self):
-        self.coracao = self.font.render(chr(9829)*self.vidas,True,(255,0,0))
+        self.coracao = self.fonte.render(chr(9829)*self.vidas,True,(255,0,0))
         self.window.blit(self.coracao,(0,0))
         self.gravidade+=0.8
         self.rect.y+=self.gravidade
@@ -112,7 +133,6 @@ class Monstro(pygame.sprite.Sprite):
         
     def combate(self,jogador, jogo,tela,window,grupo_monstro):
         if self.rect.colliderect(jogador.rect):
-            print(jogador.vidas)
             # if jogador.vidas>0:
             jogador.vidas -= 1
             if (tela.imprime_x<=-2000 and (jogo.direcao=='direita' or jogador.rect.x>=window.get_width()//2)) or (tela.imprime_x>=0 and (jogo.direcao=='esquerda' or jogador.rect.x<=window.get_width()//2 )):
@@ -124,17 +144,18 @@ class Monstro(pygame.sprite.Sprite):
             return True
         return False
 
-
-
 class Jogo:
     
     def __init__(self):
         pygame.init()
         self.window = pygame.display.set_mode((1000,409))
+        pygame.display.set_caption('JOGO DO JUCA JUCA JUCA JUCA JUCA JUCA JUCA')
+
+        self.font = pygame.font.Font('docs/imagens/PressStart2P.ttf', 20)
         self.window_largura=self.window.get_width()
-        self.tela=Tela_Inverno(self.window)
+        self.tela=Tela_Inverno(self.window,self.font)
         self.chao=Chao(self.tela.imagem)
-        self.jogador = Personagem(self.window,self.tela)
+        self.jogador = Personagem(self.window,self.tela,self.font)
         self.tela_inicio=Tela_Inicio(self.window)
         self.direcao=0
         self.tela_atual=0
@@ -146,7 +167,7 @@ class Jogo:
 
     def atualiza_estado(self):
         clock = pygame.time.Clock()
-        clock.tick(100)
+        clock.tick(80)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
@@ -155,15 +176,11 @@ class Jogo:
                     self.jogador.velocidade_x +=8
                     self.direcao='direita'
                     if self.inverteu:
-                        self.jogador.mask.invert()
                         self.inverteu = False
-                    # self.monstro.velocidade -= self.jogador.velocidade_x//2
                 elif event.key == pygame.K_LEFT:
                     self.jogador.velocidade_x+= -8
                     self.direcao='esquerda'
-                    self.jogador.mask.invert()
                     self.inverteu = True
-                    # self.monstro.velocidade += self.jogador.velocidade_x//2
                 elif event.key in (pygame.K_SPACE, pygame.K_UP) and (self.jogador.rect.bottom>=360 or self.jogador.colide==True):
                         self.jogador.gravidade=-15
                 elif event.key==pygame.K_RETURN:
@@ -173,7 +190,6 @@ class Jogo:
                         self.jogador.velocidade_x+=8
                     elif event.key == pygame.K_RIGHT:
                         self.jogador.velocidade_x += -8
-                        # self.monstro.velocidade += self.jogador.velocidade_x//2
         if (self.tela.imprime_x<=-2000 and (self.direcao=='direita' or self.jogador.rect.x>=self.window.get_width()//2)) or (self.tela.imprime_x>=0 and (self.direcao=='esquerda' or self.jogador.rect.x<=self.window.get_width()//2 )):
             self.jogador.rect.x+=self.jogador.velocidade_x
         else:
@@ -182,16 +198,23 @@ class Jogo:
                 monstro.rect.x -= self.jogador.velocidade_x
             for plataforma in self.tela.plataformaGroup:
                 plataforma.rect.x-=self.jogador.velocidade_x
+            for coin in self.tela.coinGroup:
+                coin.rect.x-=self.jogador.velocidade_x
+        
         for monstro in self.grupo_monstro:
             if monstro.combate(self.jogador,self,self.tela,self.window, self.grupo_monstro):
+                coin= Coin(monstro.rect.x,monstro.rect.y)
                 monstro.kill()
+                self.tela.coinGroup.add(coin)
                 if self.jogador.maximo <= monstro.rect.top :
                     self.jogador.vidas += 1
                     self.jogador.gravidade = -20
                 for monstrengo in self.grupo_monstro:
                     monstrengo.rect.x += self.jogador.velocidade_x
-            # else: 
-            #     print(monstro.rect)
+        for coin in self.tela.coinGroup:
+            if coin.rect.colliderect(self.jogador.rect):
+                self.tela.contador+=1
+                coin.kill()
         return True
 
     def desenha_inicio(self):
@@ -199,7 +222,7 @@ class Jogo:
             self.tela.desenha_tela()
             self.chao.desenha_chao()
             self.jogador.desenha_jogador()
-            self.grupo_monstro.draw(self.window)
+            self.grupo_monstro.draw(self.window)     
         elif self.tela_atual==0:
            self.tela_inicio.desenha_Tela_Inicio()
         pygame.display.update()
