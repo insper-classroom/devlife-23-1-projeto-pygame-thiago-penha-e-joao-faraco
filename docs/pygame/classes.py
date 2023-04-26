@@ -1,6 +1,7 @@
 import copy
 import pygame
 import random
+
 class Coin(pygame.sprite.Sprite):
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
@@ -32,8 +33,25 @@ class Chao(pygame.sprite.Sprite):
 class Tela_Inicio:
     def __init__(self,window):
         self.window=window
+        self.imagem_fundo = pygame.transform.scale(pygame.image.load('docs\imagens\seasons.webp'),(1000,410))
+        self.titulo = pygame.transform.scale(pygame.image.load('docs\imagens\otitulo.png'),(800,90))
+        self.jogar = pygame.transform.scale(pygame.image.load('docs\imagens\Jogar2.png'),(200,80))
+        self.rect_inicio = pygame.Rect(400,250,200,80)
     def desenha_Tela_Inicio(self):
-        self.window.fill((0,0,0))
+        self.window.blit(self.imagem_fundo,(0,0))
+        self.window.blit(self.titulo,(100,10))
+        # pygame.draw.rect(self.window,(255,255,255),self.rect_inicio)
+        self.window.blit(self.jogar,(400,250))
+
+class Tela_Game_Over:
+    def __init__(self,window):
+        self.window = window
+        self.game_over = pygame.transform.scale(pygame.image.load('docs\imagens\gameover.png'),(1000,205))
+        self.recomecar = pygame.transform.scale(pygame.image.load('docs\imagens\Recomecar.png'),(800,205))
+    def desenha_game_over(self):
+        self.window.fill((246,246,246))
+        self.window.blit(self.game_over,(0,0))
+        self.window.blit(self.recomecar,(100,206))
 
 class Tela_Inverno(pygame.sprite.Sprite):
     
@@ -165,15 +183,21 @@ class Jogo:
         self.lista_monstro = []
         self.inverteu = False
         self.tocou = False
+        self.tela_game_over = Tela_Game_Over(self.window)
+        self.game_over = False
         self.monstro_morre = pygame.mixer.Sound('docs\sons\MonstroMorre.wav')
         for i in range(5):
             self.grupo_monstro.add(Monstro())
         pygame.mixer_music.load('docs\sons\game_music.wav')
         pygame.mixer_music.set_volume(0.2)
         pygame.mixer_music.play(1000000000)
+
     def atualiza_estado(self):
         clock = pygame.time.Clock()
         clock.tick(80)
+        if self.jogador.vidas <= 0:
+            self.tela_atual = 2
+            self.game_over = True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
@@ -190,10 +214,16 @@ class Jogo:
                     if not self.inverteu:
                         self.jogador.image = pygame.transform.flip(self.jogador.image, True, False)
                         self.inverteu = True
-                    # self.monstro.velocidade += self.jogador.velocidade_x//2
+                elif event.key == pygame.K_RETURN and self.game_over:
+                    self.tela_atual = 1
+                    self.game_over = False
+                    self.jogador.vidas = 3
+                    game = Jogo()
                 elif event.key in (pygame.K_SPACE, pygame.K_UP) and (self.jogador.rect.bottom>=360 or self.jogador.colide==True):
                         self.jogador.gravidade=-15
-                elif event.key==pygame.K_RETURN:
+            elif event.type== pygame.MOUSEBUTTONDOWN:
+                self.pos = pygame.mouse.get_pos()
+                if self.tela_inicio.rect_inicio.collidepoint(self.pos):
                     self.tela_atual=1
             elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
@@ -236,11 +266,13 @@ class Jogo:
             self.grupo_monstro.draw(self.window)     
         elif self.tela_atual==0:
            self.tela_inicio.desenha_Tela_Inicio()
+        elif self.tela_atual == 2:
+            self.tela_game_over.desenha_game_over()
         pygame.display.update()
 
     def loop(self):
         while self.atualiza_estado():
-            self.desenha_inicio()            
+            self.desenha_inicio()
         
 
     
