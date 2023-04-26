@@ -1,14 +1,12 @@
 import pygame
 import random
+
 class Bolinha(pygame.sprite.Sprite):   
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
         self.image=pygame.transform.scale(pygame.image.load('docs/imagens/bolinha.png'),(20,20)).convert_alpha()
         self.rect=self.image.get_rect()
         self.rect.topleft=(x,y)
-
-                
-            
 
 class Planta(pygame.sprite.Sprite):
     def __init__(self,x,y):
@@ -49,8 +47,25 @@ class Chao(pygame.sprite.Sprite):
 class Tela_Inicio:
     def __init__(self,window):
         self.window=window
+        self.imagem_fundo = pygame.transform.scale(pygame.image.load('docs/imagens/seasons.webp'),(1000,410))
+        self.titulo = pygame.transform.scale(pygame.image.load('docs/imagens/otitulo.png'),(800,90))
+        self.jogar = pygame.transform.scale(pygame.image.load('docs/imagens/Jogar2.png'),(200,80))
+        self.rect_inicio = pygame.Rect(400,250,200,80)
     def desenha_Tela_Inicio(self):
-        self.window.fill((0,0,0))
+        self.window.blit(self.imagem_fundo,(0,0))
+        self.window.blit(self.titulo,(100,10))
+        # pygame.draw.rect(self.window,(255,255,255),self.rect_inicio)
+        self.window.blit(self.jogar,(400,250))
+
+class Tela_Game_Over:
+    def __init__(self,window):
+        self.window = window
+        self.game_over = pygame.transform.scale(pygame.image.load('docs/imagens/gameover.png'),(1000,205))
+        self.recomecar = pygame.transform.scale(pygame.image.load('docs/imagens/Recomecar.png'),(800,205))
+    def desenha_game_over(self):
+        self.window.fill((246,246,246))
+        self.window.blit(self.game_over,(0,0))
+        self.window.blit(self.recomecar,(100,206))
 
 class Tela_Inverno(pygame.sprite.Sprite):
     
@@ -208,13 +223,13 @@ class Jogo:
         pygame.init()
         self.window = pygame.display.set_mode((1000,409))
         pygame.display.set_caption('JOGO DO JUCA JUCA JUCA JUCA JUCA JUCA JUCA')
-
         self.font = pygame.font.Font('docs/fontes/PressStart2P.ttf', 20)
         self.window_largura=self.window.get_width()
         self.tela=Tela_Inverno(self.window,self.font)
         self.chao=Chao(self.tela.imagem)
         self.jogador = Personagem(self.window,self.tela,self.font)
         self.tela_inicio=Tela_Inicio(self.window)
+        self.tela_game_over=Tela_Game_Over(self.window)
         self.direcao=0
         self.tela_atual=0
         self.inverteu = False
@@ -227,9 +242,13 @@ class Jogo:
         pygame.mixer.Sound.set_volume(self.pega_coin,0.8)
         pygame.mixer_music.load('docs/sons/game_music.wav')
         pygame.mixer_music.play(1000000000)
+
     def atualiza_estado(self):
         clock = pygame.time.Clock()
         clock.tick(80)
+        if self.jogador.vidas <= 0:
+            self.tela_atual = 2
+            self.game_over = True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
@@ -246,10 +265,17 @@ class Jogo:
                     if not self.inverteu:
                         self.jogador.image = pygame.transform.flip(self.jogador.image, True, False)
                         self.inverteu = True
+                elif event.key == pygame.K_RETURN and self.game_over:
+                    self.tela_atual = 1
+                    self.game_over = False
+                    self.jogador.vidas = 3
+                    game = Jogo()
                 elif event.key in (pygame.K_SPACE, pygame.K_UP) and (self.jogador.rect.bottom>=360 or self.jogador.colide==True):
                         self.jogador.gravidade=-15
                         self.pula.play()
-                elif event.key==pygame.K_RETURN:
+            elif event.type== pygame.MOUSEBUTTONDOWN:
+                self.pos = pygame.mouse.get_pos()
+                if self.tela_inicio.rect_inicio.collidepoint(self.pos):
                     self.tela_atual=1
             elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
@@ -270,6 +296,7 @@ class Jogo:
                 planta.rect.x-=self.jogador.velocidade_x
             for bolinha in self.tela.bolinhaGroup:
                 bolinha.rect.x-=self.jogador.velocidade_x
+        
         for monstro in self.tela.grupo_monstro:
             if monstro.rect.colliderect(self.jogador.rect):
                 self.jogador.vidas -= 1
@@ -281,14 +308,23 @@ class Jogo:
                     self.jogador.vidas += 1
                     self.jogador.gravidade = -20
                     self.pula.play()
-                for monstrengo in self.tela.grupo_monstro:
-                    monstrengo.rect.x += self.jogador.velocidade_x
         
         for coin in self.tela.coinGroup:
             if coin.rect.colliderect(self.jogador.rect):
                 self.pega_coin.play()
                 self.tela.contador_coin+=1
                 coin.kill()
+        
+        for bolinha in self.tela.bolinhaGroup:
+            if bolinha.rect.colliderect(self.jogador.rect):
+                bolinha.kill()
+                self.jogador.vidas-=1
+        for planta in self.tela.plantaGroup: 
+            if planta.rect.colliderect(self.jogador.rect):
+                if self.jogador.maximo <= planta.rect.top:
+                    self.jogador.gravidade = -20
+                    self.pula.play()
+                    planta.kill()
         return True
 
     def desenha_inicio(self):
@@ -299,11 +335,13 @@ class Jogo:
             self.jogador.desenha_jogador()
         elif self.tela_atual==0:
            self.tela_inicio.desenha_Tela_Inicio()
+        elif self.tela_atual == 2:
+            self.tela_game_over.desenha_game_over()
         pygame.display.update()
 
     def loop(self):
         while self.atualiza_estado():
-            self.desenha_inicio()            
+            self.desenha_inicio()
         
 
     
