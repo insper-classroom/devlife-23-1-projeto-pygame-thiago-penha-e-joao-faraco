@@ -1,5 +1,10 @@
 from classes import Jogo
-game = Jogo()
-game.loop() 
+
+roda = True
+while roda:
+    game = Jogo()
+    game.loop()
+    if game.fechou :
+        roda = False
 
 
