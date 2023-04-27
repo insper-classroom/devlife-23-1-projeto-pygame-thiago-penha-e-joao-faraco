@@ -1,15 +1,20 @@
-*{margin:0px;
+/* *{margin:0px;
     padding:0px;
     scroll-behavior: smooth;
-    font-family: 'Courier New', Courier, monospace;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 
-}
+} */
 h1 {
     font-family: 'Common Pixel', sans-serif;
 }
+
+body {
+    background-color: #E3F2C1;
+}
 main {
-    margin-top: 80px;
-    margin-left:30px;
+    margin-top: 100px;
+    margin-left:40px;
+    margin-right: 40px;
 }
 #header {
     width: 100%;
@@ -21,6 +26,8 @@ main {
     flex-direction:row;
     align-items: center;
     position: fixed;
+    background-color: #000;
+    left: 0;
 }
 #header h1{
     margin-left:10px;
@@ -51,6 +58,38 @@ main {
     transition: 0.5s;
 }
 .Descricao{
-    background-image: url('../seasons.webp');
-    background-size: cover;
+    font-size: large;
+    /* margin-top: 130px; */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: #000;
+    
 }
+.descreve{
+    display: flex;
+    max-width: 40%;
+    min-width: 100px;
+    flex-direction: column;
+
+}
+.video {display: flex;
+    flex-direction: column;
+    margin-left:200px;
+    margin-top: 100px;
+}
+button {
+    border: 0 px;
+    border-radius: 20 px;
+    color : #fff;
+    text-decoration: none;
+    display: block;
+    width: 120 px;
+    padding: 13px 8px;
+}
+ul {
+    list-style: none;
+}
+/* .Log {
+    margin: 80 rem;
+} */

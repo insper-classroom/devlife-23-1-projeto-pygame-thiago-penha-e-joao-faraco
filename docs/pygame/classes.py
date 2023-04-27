@@ -119,7 +119,6 @@ class Tela_Inverno(pygame.sprite.Sprite):
     
     def __init__(self,window,fonte):
         pygame.sprite.Sprite.__init__(self)
-        
         self.imagem = pygame.transform.scale(pygame.image.load('docs/imagens/Inverno_att.png').convert_alpha(),(3000,410))
         self.arvore=pygame.transform.scale(pygame.image.load('docs/imagens/Arvore_Inverno.png'),(100,100))
         self.moeda_contadora=pygame.transform.scale(pygame.image.load('docs/imagens/coin_2.png'),(50,50)).convert_alpha()
