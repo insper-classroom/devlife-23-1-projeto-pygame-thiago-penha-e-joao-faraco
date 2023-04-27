@@ -48,15 +48,28 @@ class Tela_Inicio:
     def __init__(self,window):
         self.window=window
         self.imagem_fundo = pygame.transform.scale(pygame.image.load('docs/imagens/seasons.webp'),(1000,410))
+        self.imagem_fundo_maior = pygame.transform.scale(pygame.image.load('docs/imagens/seasons.webp'),(1005,415))
         self.titulo = pygame.transform.scale(pygame.image.load('docs/imagens/otitulo.png'),(800,90))
+        self.titulo_maior = pygame.transform.scale(pygame.image.load('docs/imagens/otitulo.png'),(805,95))
         self.jogar = pygame.transform.scale(pygame.image.load('docs/imagens/Jogar2.png'),(200,80))
         self.rect_inicio = pygame.Rect(400,250,200,80)
+        self.jogar_maior = pygame.transform.scale(pygame.image.load('docs/imagens/Jogar2.png'),(205,85))
+        self.rect_inicio_maior = pygame.Rect(400,250,205,85)
+        self.contador=0 
     def desenha_Tela_Inicio(self):
-        self.window.blit(self.imagem_fundo,(0,0))
-        self.window.blit(self.titulo,(100,10))
-        # pygame.draw.rect(self.window,(255,255,255),self.rect_inicio)
-        self.window.blit(self.jogar,(400,250))
-
+        self.contador+=0.5
+        if self.contador>=20:
+            self.window.blit(self.imagem_fundo_maior,(0,0))
+            self.window.blit(self.titulo_maior,(100,1))
+            pygame.draw.rect(self.window,(0,0,0),self.rect_inicio_maior)
+            self.window.blit(self.jogar_maior,(400,250))
+        else:
+            self.window.blit(self.imagem_fundo,(0,0))
+            pygame.draw.rect(self.window,(0,0,0),self.rect_inicio)
+            self.window.blit(self.jogar,(400,250))
+            self.window.blit(self.titulo,(100,1))
+        if self.contador==40:
+            self.contador=0
 class Tela_Game_Over:
     def __init__(self,window):
         self.window = window
@@ -107,10 +120,10 @@ class Tela_Inverno(pygame.sprite.Sprite):
     def cria_monstro(self):
         i=0
         while i<5:
-            posicao_x = random.randint(0, 2450)
+            posicao_x = random.randint(600, 2450)
             posicao_y = 310
             monstro=Monstro(posicao_x,posicao_y)
-            if not pygame.sprite.spritecollide(monstro, self.grupo_monstro, False, pygame.sprite.collide_mask):
+            if not pygame.sprite.spritecollide(monstro, self.grupo_monstro, False, pygame.sprite.collide_mask) :
                 i+=1
                 self.grupo_monstro.add(monstro)
 
@@ -132,7 +145,7 @@ class Tela_Inverno(pygame.sprite.Sprite):
     def cria_coin(self):
         j=0
         while j<10:
-            posicao_x = random.randint(0, 2450)
+            posicao_x = random.randint(600, 2450)
             posicao_y = random.randint(100,330)
             coin=Coin(posicao_x,posicao_y)
             if not pygame.sprite.spritecollide(coin, self.coinGroup, False, pygame.sprite.collide_mask) and not pygame.sprite.spritecollide(coin, self.plataformaGroup, False, pygame.sprite.collide_mask):
@@ -164,6 +177,7 @@ class Tela_Inverno(pygame.sprite.Sprite):
         self.plantaGroup.draw(self.window)
         self.grupo_monstro.draw(self.window)
         self.desenha_bolinha()
+
 class Personagem(pygame.sprite.Sprite):
    
     def __init__(self,window,tela,fonte):
@@ -251,7 +265,7 @@ class Jogo:
             self.game_over = True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return False
+                pygame.quit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
                     self.jogador.velocidade_x +=8
@@ -266,10 +280,7 @@ class Jogo:
                         self.jogador.image = pygame.transform.flip(self.jogador.image, True, False)
                         self.inverteu = True
                 elif event.key == pygame.K_RETURN and self.game_over:
-                    self.tela_atual = 1
-                    self.game_over = False
-                    self.jogador.vidas = 3
-                    game = Jogo()
+                    return False 
                 elif event.key in (pygame.K_SPACE, pygame.K_UP) and (self.jogador.rect.bottom>=360 or self.jogador.colide==True):
                         self.jogador.gravidade=-15
                         self.pula.play()

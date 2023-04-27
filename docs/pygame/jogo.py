@@ -1,5 +1,5 @@
 from classes import Jogo
-game = Jogo()
-game.loop() 
-
+while True:
+    game = Jogo()
+    game.loop()
 
