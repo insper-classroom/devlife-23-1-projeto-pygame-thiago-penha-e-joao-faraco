@@ -4,14 +4,14 @@ import random
 class Bolinha(pygame.sprite.Sprite):   
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/bolinha.png'),(20,20)).convert_alpha()
+        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/bolinha de neve.png'),(20,20)).convert_alpha()
         self.rect=self.image.get_rect()
         self.rect.topleft=(x,y)
 
 class Planta(pygame.sprite.Sprite):
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/Planta.png'),(50,50)).convert_alpha()
+        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/Planta_neve.png'),(60,60)).convert_alpha()
         self.image=pygame.transform.flip(self.image, True, False)
         self.rect=self.image.get_rect()
         self.rect.topleft=(x,y)
@@ -70,6 +70,7 @@ class Tela_Inicio:
             self.window.blit(self.titulo,(100,1))
         if self.contador==40:
             self.contador=0
+
 class Tela_Game_Over:
     def __init__(self,window):
         self.window = window
@@ -111,7 +112,7 @@ class Tela_Inverno(pygame.sprite.Sprite):
         self.frequenciadotiro+=0.5
         if self.frequenciadotiro%50==0:
             for planta in self.plantaGroup:
-                bolinha=Bolinha(planta.rect.x,planta.rect.y)
+                bolinha=Bolinha(planta.rect.x,planta.rect.y+10)
                 self.bolinhaGroup.add(bolinha)
         for bolinha in self.bolinhaGroup:
             bolinha.rect.x-=3
@@ -246,6 +247,7 @@ class Jogo:
         self.tela_game_over=Tela_Game_Over(self.window)
         self.direcao=0
         self.tela_atual=0
+        self.movimentação_monstro=0
         self.inverteu = False
         self.tocou = False
         self.monstro_morre = pygame.mixer.Sound('docs/sons/MonstroMorre.wav')
@@ -309,6 +311,13 @@ class Jogo:
                 bolinha.rect.x-=self.jogador.velocidade_x
         
         for monstro in self.tela.grupo_monstro:
+            self.movimentação_monstro+=0.05
+            if self.movimentação_monstro>=10:
+                monstro.rect.x+=2
+            else:
+                monstro.rect.x-=2
+            if self.movimentação_monstro>=20:
+                self.movimentação_monstro=0
             if monstro.rect.colliderect(self.jogador.rect):
                 self.jogador.vidas -= 1
                 monstro.kill()
