@@ -95,8 +95,13 @@ class Tela_Game_Over:
         self.game_over = pygame.transform.scale(pygame.image.load('docs/imagens/gameover.png'),(1000,205))
         self.recomecar = pygame.transform.scale(pygame.image.load('docs/imagens/Recomecar.png'),(800,205))
         # self.fechou_over = False
-
+        self.music=pygame.mixer.Sound('docs/sons/game_over_bad_chest.wav')
+        self.play=False 
     def atualiza_estado_over(self):
+        pygame.mixer.music.stop()
+        if not self.play:
+            self.music.play()
+            self.play=True
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN and self.jogo.jogador.vidas <=0:
