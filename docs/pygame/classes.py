@@ -355,4 +355,3 @@ class Jogo:
             self.desenha_inicio()
         
 
-    
