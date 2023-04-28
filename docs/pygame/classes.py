@@ -209,7 +209,7 @@ class Tela_Inverno():
 
 class Tela_Outono():
     def __init__(self,fonte):
-        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/floresta_outono.jpg'),(3000,410)).convert_alpha()
+        self.imagem=pygame.transform.scale(pygame.image.load('docs/imagens/floresta_outono.jpg'),(3000,410)).convert_alpha()
         self.arvore=pygame.transform.scale(pygame.image.load('docs/imagens/Arvore_Inverno.png'),(100,100))
         self.moeda_contadora=pygame.transform.scale(pygame.image.load('docs/imagens/coin_2.png'),(50,50)).convert_alpha()
         self.imprime_x=0   
@@ -302,7 +302,7 @@ class Tela_Outono():
 
 
     def desenha_tela_outono(self):
-        window.blit(self.image,(0,0))
+        window.blit(self.imagem,(0,0))
 
 class Personagem(pygame.sprite.Sprite):
    
@@ -474,6 +474,7 @@ class Jogo:
         self.inverteu = False
         self.tocou = False
         self.fechou = False
+        self.tela_outono=False 
         pygame.mixer_music.load('docs/sons/game_music.wav')
         pygame.mixer_music.play(1000000000)
 
@@ -498,8 +499,14 @@ class Jogo:
         elif self.tela_atual == 2:
             self.tela_game_over.desenha_game_over()
         elif self.tela_atual==3:
-            self.tela=Tela_Outono(self.font)
+            if self.tela_outono==False:
+                self.tela=Tela_Outono(self.font)
+                self.tela_outono==True 
             self.tela.desenha_tela_outono()
+            self.tela.desenha_tela()
+            self.chao.desenha_chao()
+            self.tela.desenha_personagens()   
+            self.jogador.desenha_jogador()
         pygame.display.update()
 
     def loop(self):
