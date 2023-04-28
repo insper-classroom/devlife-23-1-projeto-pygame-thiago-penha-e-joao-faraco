@@ -72,12 +72,21 @@ main {
     font-size:large;
     transition: 0.5s;
 }
+#heuristica { 
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+}
+#heuristica:hover{
+    font-size:large;
+    transition: 0.5s;
+}
 
 #inverno{
     display: flex;
     flex-direction: column;
     background: rgb(165,165,247);
-    background: linear-gradient(90deg, rgba(165,165,247,1) 35%, rgba(184,243,255,1) 100%);
+    background: linear-gradient(90deg, rgb(83, 90, 102) 35%, rgb(125, 131, 145) 100%);
     border: 2px solid black;
     height: fit-content;
 }
@@ -105,6 +114,7 @@ main {
 #descreve p{
     margin-top: 5px;
 }
+
 button{
     margin-left: 50%;
     width:120px;
@@ -123,7 +133,7 @@ button{
 #log{
     height: fit-content;
     background: rgb(214,125,255);
-    background: linear-gradient(90deg, rgba(214,125,255,1) 35%, rgba(247,165,222,1) 100%);
+background: linear-gradient(90deg, rgb(83, 90, 102) 35%, rgb(125, 131, 145) 100%);
     font-size:x-large;
     border: 2px solid black;
     width: 100%;
@@ -146,8 +156,8 @@ ul {
     display: flex;
     flex-direction: column;
     height: fit-content;
-    background: rgb(169,255,125);
-    background: linear-gradient(90deg, rgba(169,255,125,1) 35%, rgba(165,247,203,1) 100%);
+    background: rgb(14, 211, 237);
+    background: linear-gradient(90deg, rgb(83, 90, 102) 35%, rgb(125, 131, 145) 100%);
     border: 2px solid black;
     padding: 20px 0px;
 
@@ -156,18 +166,15 @@ ul {
         margin-left: 15px;
         max-width: 50%;
 }
-
-#developer{
-    background: rgb(255,195,125);
-    background: linear-gradient(90deg, rgba(255,195,125,1) 35%, rgba(247,231,165,1) 100%);
-    height: 200px;
-    font-size:x-large;
-    border: 2px solid black;
-}
-#developer p,h2{
+.instrucoes{
     margin-left: 15px;
-    max-width: 50%;
 }
-#developer p{
-    margin-top: 5px;
-}
+
+#footer {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    text-align: center;
+  }
