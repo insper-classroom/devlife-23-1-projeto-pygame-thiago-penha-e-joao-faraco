@@ -75,7 +75,7 @@ main {
     display: flex;
     max-width: 40%;
     flex-direction: column;
-    margin-right:80px;
+    margin-right:18.5%;
     
 }
 #descreve h2{
@@ -119,11 +119,15 @@ ul {
     font-size:x-large;
     display: flex;
     flex-direction: column;
-    height: 300px;
+    height: 350px;
     background: rgb(160,222,162);
     background: linear-gradient(131deg, rgba(160,222,162,1) 0%, rgba(255,255,255,1) 74%);
     border: 2px solid black;
 
+}
+#instruções p{
+        margin-left: 15px;
+        max-width: 50%;
 }
 
 #developer{
