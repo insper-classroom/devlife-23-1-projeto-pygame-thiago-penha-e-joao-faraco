@@ -1,52 +1,9 @@
 import pygame
-import random
+import tela_inverno
+from tela_inverno import window
+from tela_inverno import Coin 
+tela=tela_inverno                      
 
-window = pygame.display.set_mode((1000,409))
-
-
-class Bolinha(pygame.sprite.Sprite):   
-    def __init__(self,x,y):
-        pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/bolinha de neve.png'),(20,20)).convert_alpha()
-        self.rect=self.image.get_rect()
-        self.rect.topleft=(x,y)
-
-class Planta(pygame.sprite.Sprite):
-    def __init__(self,x,y):
-        pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/Planta_neve.png'),(60,60)).convert_alpha()
-        self.image=pygame.transform.flip(self.image, True, False)
-        self.rect=self.image.get_rect()
-        self.rect.topleft=(x,y)
-
-class Coin(pygame.sprite.Sprite):
-    def __init__(self,x,y):
-        pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/coin_2.png'),(25,25)).convert_alpha()
-        self.contador=pygame.transform.scale(pygame.image.load('docs/imagens/coin_2.png'),(50,50)).convert_alpha()
-        self.rect=self.image.get_rect()
-        self.rect.topleft=(x,y)
-    
-class Plataforma(pygame.sprite.Sprite):
-    def __init__(self,x,y):
-        pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/plataforma.png'),(150,50)).convert_alpha()
-        self.rect=self.image.get_rect()
-        self.rect.topleft=(x,y)
-
-class Chao(pygame.sprite.Sprite):
-    def __init__(self,tela):
-        pygame.sprite.Sprite.__init__(self)
-        self.chao=pygame.transform.scale(pygame.image.load('docs/imagens/chao inverno.png'),(50,50))
-        self.chao_rect=self.chao.get_rect()
-        self.chao_altura=self.chao.get_height()
-        self.chao_largura=self.chao.get_width()
-        self.quantidade= tela.get_width()//self.chao_largura
-        self.tela=tela 
-    def desenha_chao(self):
-        for i in range(self.quantidade+1):
-            self.tela.blit(self.chao,(i*self.chao_largura,360))
-                          
 class Tela_Inicio:
     def __init__(self,jogo):
         self.jogo = jogo
@@ -112,197 +69,6 @@ class Tela_Game_Over:
         window.fill((246,246,246))
         window.blit(self.game_over,(0,0))
         window.blit(self.recomecar,(100,206))
-
-class Tela_Inverno():
-    
-    def __init__(self,fonte):
-        self.imagem = pygame.transform.scale(pygame.image.load('docs/imagens/Inverno_att.png').convert_alpha(),(3000,410))
-        self.arvore=pygame.transform.scale(pygame.image.load('docs/imagens/Arvore_Inverno.png'),(100,100))
-        self.moeda_contadora=pygame.transform.scale(pygame.image.load('docs/imagens/coin_2.png'),(50,50)).convert_alpha()
-        self.imprime_x=0   
-        self.arvores=[]       
-        self.posicao_plat=[]
-        self.fonte=fonte
-        self.contador_coin=0
-        self.frequenciadotiro=0
-        self.plataformaGroup=pygame.sprite.Group()
-        self.coinGroup=pygame.sprite.Group()
-        self.grupo_monstro= pygame.sprite.Group()
-        self.plantaGroup=pygame.sprite.Group()
-        self.bolinhaGroup=pygame.sprite.Group()
-        self.cria_arvore()
-        self.cria_plat()
-        self.cria_coin()
-        self.cria_planta()
-        self.cria_monstro()
-    
-    def desenha_bolinha(self):
-        self.frequenciadotiro+=0.5
-        if self.frequenciadotiro%100==0:
-            for planta in self.plantaGroup:
-                bolinha=Bolinha(planta.rect.x,planta.rect.y+10)
-                self.bolinhaGroup.add(bolinha)
-        for bolinha in self.bolinhaGroup:
-            bolinha.rect.x-=3
-        self.bolinhaGroup.draw(window)
-
-    def cria_monstro(self):
-        i=0
-        while i<5:
-            posicao_x = random.randint(600, 2450)
-            posicao_y = 310
-            monstro=Monstro(posicao_x,posicao_y)
-            if not pygame.sprite.spritecollide(monstro, self.grupo_monstro, False, pygame.sprite.collide_mask) :
-                i+=1
-                self.grupo_monstro.add(monstro)
-
-    def cria_arvore(self):
-        for i in range(10):
-            posicao_x = random.randint(0, 2470)
-            self.arvores.append([posicao_x,260])
-    
-    def cria_plat(self):
-        i=0
-        while i<8:
-            posicao_x = random.randint(0, 2450)
-            posicao_y = random.randint(150,250)
-            plataforma=Plataforma(posicao_x,posicao_y)
-            if not pygame.sprite.spritecollide(plataforma, self.plataformaGroup, False, pygame.sprite.collide_mask):
-                i+=1
-                self.plataformaGroup.add(plataforma)
-    
-    def cria_coin(self):
-        j=0
-        while j<10:
-            posicao_x = random.randint(600, 2450)
-            posicao_y = random.randint(100,330)
-            coin=Coin(posicao_x,posicao_y)
-            if not pygame.sprite.spritecollide(coin, self.coinGroup, False, pygame.sprite.collide_mask) and not pygame.sprite.spritecollide(coin, self.plataformaGroup, False, pygame.sprite.collide_mask):
-                j+=1
-                self.coinGroup.add(coin)
-
-    def cria_planta(self):
-         j=0
-         while j<2:
-            posicao_x = random.randint(1500, 2450)
-            posicao_y = 310
-            planta=Planta(posicao_x,posicao_y)
-            if not pygame.sprite.spritecollide(planta, self.plantaGroup, False, pygame.sprite.collide_mask):
-                self.plantaGroup.add(planta)
-                j+=1
-
-
-    def desenha_tela(self):
-        window.blit(self.imagem,(self.imprime_x,0))
-        for arvore in self.arvores:
-            self.imagem.blit(self.arvore,(arvore[0],arvore[1]))
-        window.blit(self.moeda_contadora,(900,20))
-        self.contador_imagem=self.fonte.render(str(self.contador_coin),True,(0,0,0))
-        window.blit(self.contador_imagem,(960,35))
-    
-    def desenha_personagens(self):
-        self.plataformaGroup.draw(window)
-        self.coinGroup.draw(window)
-        self.plantaGroup.draw(window)
-        self.grupo_monstro.draw(window)
-        self.desenha_bolinha()
-
-class Tela_Outono():
-    def __init__(self,fonte):
-        self.imagem=pygame.transform.scale(pygame.image.load('docs/imagens/floresta_outono.jpg'),(3000,410)).convert_alpha()
-        self.arvore=pygame.transform.scale(pygame.image.load('docs/imagens/Arvore_Inverno.png'),(100,100))
-        self.moeda_contadora=pygame.transform.scale(pygame.image.load('docs/imagens/coin_2.png'),(50,50)).convert_alpha()
-        self.imprime_x=0   
-        self.arvores=[]       
-        self.posicao_plat=[]
-        self.fonte=fonte
-        self.contador_coin=0
-        self.frequenciadotiro=0
-        self.plataformaGroup=pygame.sprite.Group()
-        self.coinGroup=pygame.sprite.Group()
-        self.grupo_monstro= pygame.sprite.Group()
-        self.plantaGroup=pygame.sprite.Group()
-        self.bolinhaGroup=pygame.sprite.Group()
-        self.cria_arvore()
-        self.cria_plat()
-        self.cria_coin()
-        self.cria_planta()
-        self.cria_monstro()
-    
-    def desenha_bolinha(self):
-        self.frequenciadotiro+=0.5
-        if self.frequenciadotiro%100==0:
-            for planta in self.plantaGroup:
-                bolinha=Bolinha(planta.rect.x,planta.rect.y+10)
-                self.bolinhaGroup.add(bolinha)
-        for bolinha in self.bolinhaGroup:
-            bolinha.rect.x-=3
-        self.bolinhaGroup.draw(window)
-
-    def cria_monstro(self):
-        i=0
-        while i<5:
-            posicao_x = random.randint(600, 2450)
-            posicao_y = 310
-            monstro=Monstro(posicao_x,posicao_y)
-            if not pygame.sprite.spritecollide(monstro, self.grupo_monstro, False, pygame.sprite.collide_mask) :
-                i+=1
-                self.grupo_monstro.add(monstro)
-
-    def cria_arvore(self):
-        for i in range(10):
-            posicao_x = random.randint(0, 2470)
-            self.arvores.append([posicao_x,260])
-    
-    def cria_plat(self):
-        i=0
-        while i<8:
-            posicao_x = random.randint(0, 2450)
-            posicao_y = random.randint(150,250)
-            plataforma=Plataforma(posicao_x,posicao_y)
-            if not pygame.sprite.spritecollide(plataforma, self.plataformaGroup, False, pygame.sprite.collide_mask):
-                i+=1
-                self.plataformaGroup.add(plataforma)
-    
-    def cria_coin(self):
-        j=0
-        while j<10:
-            posicao_x = random.randint(600, 2450)
-            posicao_y = random.randint(100,330)
-            coin=Coin(posicao_x,posicao_y)
-            if not pygame.sprite.spritecollide(coin, self.coinGroup, False, pygame.sprite.collide_mask) and not pygame.sprite.spritecollide(coin, self.plataformaGroup, False, pygame.sprite.collide_mask):
-                j+=1
-                self.coinGroup.add(coin)
-
-    def cria_planta(self):
-         j=0
-         while j<2:
-            posicao_x = random.randint(1500, 2450)
-            posicao_y = 310
-            planta=Planta(posicao_x,posicao_y)
-            if not pygame.sprite.spritecollide(planta, self.plantaGroup, False, pygame.sprite.collide_mask):
-                self.plantaGroup.add(planta)
-                j+=1
-
-
-    def desenha_tela(self):
-        window.blit(self.imagem,(self.imprime_x,0))
-        for arvore in self.arvores:
-            self.imagem.blit(self.arvore,(arvore[0],arvore[1]))
-        window.blit(self.moeda_contadora,(900,20))
-        self.contador_imagem=self.fonte.render(str(self.contador_coin),True,(0,0,0))
-        window.blit(self.contador_imagem,(960,35))
-    
-    def desenha_personagens(self):
-        self.plataformaGroup.draw(window)
-        self.coinGroup.draw(window)
-        self.plantaGroup.draw(window)
-        self.grupo_monstro.draw(window)
-        self.desenha_bolinha()
-
-
-    def desenha_tela_outono(self):
-        window.blit(self.imagem,(0,0))
 
 class Personagem(pygame.sprite.Sprite):
    
@@ -420,10 +186,7 @@ class Personagem(pygame.sprite.Sprite):
                     self.gravidade = -20
                     self.pula.play()
                     planta.kill()
-        
-        if self.rect.x>=1001:
-            self.jogo.tela_atual = 3
-        
+
         return True
     
     def desenha_jogador(self):
@@ -449,25 +212,17 @@ class Personagem(pygame.sprite.Sprite):
                 self.colide=False
         window.blit(self.image,self.rect)
         
-class Monstro(pygame.sprite.Sprite):
-    def __init__(self,x,y):
-        super().__init__()
-        self.tick=0
-        self.image = pygame.transform.scale(pygame.image.load('docs/imagens/monstroatt.png'),(50,50))
-        self.rect = self.image.get_rect() 
-        self.rect=self.image.get_rect()
-        self.rect.topleft=(x,y)
-
 class Jogo:
-    global window
+
+    global tela 
     def __init__(self):
         pygame.init()
         pygame.display.set_caption('Four Seasons Odyssey')
         self.tela_atual = 0
         self.font = pygame.font.Font('docs/fontes/PressStart2P.ttf', 20)
         self.window_largura=window.get_width()
-        self.tela=Tela_Inverno(self.font)
-        self.chao=Chao(self.tela.imagem)
+        self.tela=tela.Tela_Inverno(self.font)
+        self.chao=tela.Chao(self.tela.imagem)
         self.jogador = Personagem(self.tela,self.font,self)
         self.tela_inicio=Tela_Inicio(self)
         self.tela_game_over=Tela_Game_Over(self)
@@ -498,15 +253,6 @@ class Jogo:
            self.tela_inicio.desenha_Tela_Inicio()
         elif self.tela_atual == 2:
             self.tela_game_over.desenha_game_over()
-        elif self.tela_atual==3:
-            if self.tela_outono==False:
-                self.tela=Tela_Outono(self.font)
-                self.tela_outono==True 
-            self.tela.desenha_tela_outono()
-            self.tela.desenha_tela()
-            self.chao.desenha_chao()
-            self.tela.desenha_personagens()   
-            self.jogador.desenha_jogador()
         pygame.display.update()
 
     def loop(self):
