@@ -166,6 +166,7 @@ ul {
 }
 #developer p,h2{
     margin-left: 15px;
+    max-width: 50%;
 }
 #developer p{
     margin-top: 5px;
