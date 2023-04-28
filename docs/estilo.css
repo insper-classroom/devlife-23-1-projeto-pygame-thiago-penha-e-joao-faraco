@@ -2,7 +2,6 @@
     padding:0px;
     scroll-behavior: smooth;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-
 } 
 
 
@@ -23,6 +22,7 @@ main {
     position:fixed;
     background-color: #000;
     left: 0;
+    z-index: 22;
 }
 #header h1{
     margin-left:10px;
@@ -61,21 +61,23 @@ main {
     background: rgb(163,244,240);
     background: linear-gradient(131deg, rgba(163,244,240,1) 1%, rgba(255,255,255,1) 77%);
     border: 2px solid black;
-    height: 500px;
+    height: fit-content;
 }
 
 #Descricao{
     font-size: x-large;
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: center;
+    padding: 20px;
+    gap: 20px;
+    position: relative;
 }
 #descreve{
     display: flex;
-    max-width: 40%;
+    max-width: 50%;
     flex-direction: column;
-    margin-right:18.5%;
+    align-items: flex-start;
+    position: relative;
     
 }
 #descreve h2{
@@ -85,23 +87,26 @@ main {
 #descreve p{
     margin-top: 5px;
 }
-.video {
-    margin-bottom: 30px;
-    margin-right: 50px;
-    margin-left:200px;
-}
 button{
     margin-left: 50%;
-    width:45px;
+    width:120px;
     height:40px;
     text-decoration-color: rgb(255, 255, 255);
 }
+
+
+.download img {
+    width: 200px;
+    margin-left: 10px;
+}
 .log{
-    height: 400px;
+    height: fit-content;
     background: rgb(153,137,217);
     background: linear-gradient(131deg, rgba(153,137,217,1) 1%, rgba(255,255,255,1) 72%);
     font-size:x-large;
     border: 2px solid black;
+    width: 100%;
+    padding: 20px 0px;
 }
 .log h2{
     margin-left: 15px;
@@ -119,10 +124,11 @@ ul {
     font-size:x-large;
     display: flex;
     flex-direction: column;
-    height: 350px;
+    height: fit-content;
     background: rgb(160,222,162);
     background: linear-gradient(131deg, rgba(160,222,162,1) 0%, rgba(255,255,255,1) 74%);
     border: 2px solid black;
+    padding: 20px 0px;
 
 }
 #instruções p{
