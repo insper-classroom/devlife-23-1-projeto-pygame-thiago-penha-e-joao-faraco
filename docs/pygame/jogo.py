@@ -1,4 +1,4 @@
-from classes import Jogo
+from main import Jogo
 
 roda = True
 while roda:

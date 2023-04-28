@@ -54,6 +54,24 @@ main {
     font-size:large;
     transition: 0.5s;
 }
+#Log { 
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+}
+#Log:hover{
+    font-size:large;
+    transition: 0.5s;
+}
+#Instruções { 
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+}
+#Instruções:hover{
+    font-size:large;
+    transition: 0.5s;
+}
 
 #inverno{
     display: flex;
@@ -91,15 +109,18 @@ button{
     margin-left: 50%;
     width:120px;
     height:40px;
-    text-decoration-color: rgb(255, 255, 255);
+    
 }
 
-
+.download{
+    max-width:17%;
+    max-height:30%;
+}
 .download img {
     width: 200px;
     margin-left: 10px;
 }
-.log{
+#log{
     height: fit-content;
     background: rgb(153,137,217);
     background: linear-gradient(131deg, rgba(153,137,217,1) 1%, rgba(255,255,255,1) 72%);
@@ -108,7 +129,7 @@ button{
     width: 100%;
     padding: 20px 0px;
 }
-.log h2{
+#log h2{
     margin-left: 15px;
 }
 ul {
@@ -116,7 +137,7 @@ ul {
     margin-left: 15px;
     margin-top: 5px;
 }
-.log h2,ul{
+#log h2,ul{
     max-width: 50%;
 
 }
