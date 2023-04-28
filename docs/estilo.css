@@ -1,0 +1,141 @@
+*{margin:0px;
+    padding:0px;
+    scroll-behavior: smooth;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+} 
+
+
+body {
+    background-color: #000;
+}
+main {
+    margin-top: 100px;
+
+}
+#header {
+    width: 100%;
+    height: 100px;
+    top: 0px;
+    display: flex;
+    flex-direction:row;
+    align-items: center;
+    position:fixed;
+    background-color: #000;
+    left: 0;
+}
+#header h1{
+    margin-left:10px;
+    color: white;
+}
+
+#opcoes{
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content:space-evenly ;
+    margin-left: auto;
+}
+#creditos { 
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+    transition:ease-out;
+}
+#creditos:hover{
+    font-size:large;
+    transition: 0.5s;
+}
+#descrição { 
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+}
+#descrição:hover{
+    font-size:large;
+    transition: 0.5s;
+}
+
+#inverno{
+    display: flex;
+    flex-direction: column;
+    background: rgb(163,244,240);
+    background: linear-gradient(131deg, rgba(163,244,240,1) 1%, rgba(255,255,255,1) 77%);
+    border: 2px solid black;
+    height: 500px;
+}
+
+#Descricao{
+    font-size: x-large;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+#descreve{
+    display: flex;
+    max-width: 40%;
+    flex-direction: column;
+    margin-right:80px;
+    
+}
+#descreve h2{
+    margin:0px;
+    padding:0px;
+}
+#descreve p{
+    margin-top: 5px;
+}
+.video {
+    margin-bottom: 30px;
+    margin-right: 50px;
+    margin-left:200px;
+}
+button{
+    margin-left: 50%;
+    width:45px;
+    height:40px;
+    text-decoration-color: rgb(255, 255, 255);
+}
+.log{
+    height: 400px;
+    background: rgb(153,137,217);
+    background: linear-gradient(131deg, rgba(153,137,217,1) 1%, rgba(255,255,255,1) 72%);
+    font-size:x-large;
+    border: 2px solid black;
+}
+.log h2{
+    margin-left: 15px;
+}
+ul {
+    list-style: none;
+    margin-left: 15px;
+    margin-top: 5px;
+}
+.log h2,ul{
+    max-width: 50%;
+
+}
+#instruções{
+    font-size:x-large;
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+    background: rgb(160,222,162);
+    background: linear-gradient(131deg, rgba(160,222,162,1) 0%, rgba(255,255,255,1) 74%);
+    border: 2px solid black;
+
+}
+
+#developer{
+    background: rgb(226,157,63);
+    background: linear-gradient(131deg, rgb(255, 171, 54) 20%, rgba(255,255,255,1) 87%);
+    height: 200px;
+    font-size:x-large;
+    border: 2px solid black;
+}
+#developer p,h2{
+    margin-left: 15px;
+}
+#developer p{
+    margin-top: 5px;
+}
