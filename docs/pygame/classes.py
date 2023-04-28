@@ -501,7 +501,7 @@ class Jogo:
         elif self.tela_atual==3:
             if self.tela_outono==False:
                 self.tela=Tela_Outono(self.font)
-                self.tela_outono==True 
+                self.tela_outono=True 
             self.tela.desenha_tela_outono()
             self.tela.desenha_tela()
             self.chao.desenha_chao()
