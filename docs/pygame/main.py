@@ -2,6 +2,7 @@ import pygame
 import tela_inverno
 from tela_inverno import window
 from tela_inverno import Coin 
+import tela_outono
 tela=tela_inverno                      
 
 class Tela_Inicio:
@@ -186,7 +187,8 @@ class Personagem(pygame.sprite.Sprite):
                     self.gravidade = -20
                     self.pula.play()
                     planta.kill()
-
+        if self.rect.x>=1001:
+            self.jogo.tela_atual=3
         return True
     
     def desenha_jogador(self):
@@ -214,7 +216,6 @@ class Personagem(pygame.sprite.Sprite):
         
 class Jogo:
 
-    global tela 
     def __init__(self):
         pygame.init()
         pygame.display.set_caption('Four Seasons Odyssey')
@@ -228,20 +229,34 @@ class Jogo:
         self.tela_game_over=Tela_Game_Over(self)
         self.inverteu = False
         self.tocou = False
+        self.contador=0
         self.fechou = False
         self.tela_outono=False 
+        self.contador_tela=0
         pygame.mixer_music.load('docs/sons/game_music.wav')
         pygame.mixer_music.play(1000000000)
 
     def atualiza_estado(self): 
         if self.jogador.vidas <= 0:
             self.tela_atual = 2
-        if self.tela_atual == 0:
+        elif self.tela_atual == 0:
             return self.tela_inicio.atualiza_estado_inicio()
         if self.tela_atual == 2:
             return self.tela_game_over.atualiza_estado_over()
-        if self.tela_atual == 1 or self.tela_atual==3:
+        elif self.tela_atual == 1 or self.tela_atual==3:
             return self.jogador.movimenta_jogador(self.tela)
+        pygame.mixer.music.stop()
+        if not self.play:
+            self.music.play()
+            self.play=True
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN and self.jogo.jogador.vidas <=0:
+                    return False
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return False
+        
 
     def desenha_inicio(self):
         if self.tela_atual==1:
@@ -253,6 +268,14 @@ class Jogo:
            self.tela_inicio.desenha_Tela_Inicio()
         elif self.tela_atual == 2:
             self.tela_game_over.desenha_game_over()
+        elif self.tela_atual==3:
+            while self.contador<1:
+                self.tela=tela_outono.Tela_Outono(self.font)
+                self.contador=1
+            self.tela.desenha_tela()
+            self.tela.desenha_personagens()   
+            self.jogador.desenha_jogador()
+           
         pygame.display.update()
 
     def loop(self):
