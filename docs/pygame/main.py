@@ -2,8 +2,7 @@ import pygame
 import tela_inverno
 from tela_inverno import window
 from tela_inverno import Coin 
-import tela_outono
-tela=tela_inverno                      
+import tela_outono                    
 
 class Tela_Inicio:
     def __init__(self,jogo):
@@ -45,12 +44,15 @@ class Tela_Inicio:
         if self.contador>=40:
             self.contador=0
 
+class Instrucao:
+    def __init__(self,jogo):
+        self.jogo=jogo
+    
 class Tela_Game_Over:
     def __init__(self,jogo):
         self.jogo = jogo
         self.game_over = pygame.transform.scale(pygame.image.load('docs/imagens/gameover.png'),(1000,205))
         self.recomecar = pygame.transform.scale(pygame.image.load('docs/imagens/Recomecar.png'),(800,205))
-        # self.fechou_over = False
         self.music=pygame.mixer.Sound('docs/sons/game_over_bad_chest.wav')
         self.play=False 
     def atualiza_estado_over(self):
@@ -73,16 +75,13 @@ class Tela_Game_Over:
 
 class Personagem(pygame.sprite.Sprite):
    
-    def __init__(self,tela,fonte,jogo):
+    def __init__(self,fonte,jogo):
         pygame.sprite.Sprite.__init__(self)
-        self.platafroma_image=pygame.transform.scale(pygame.image.load('docs/imagens/plataforma.png'),(150,50)).convert_alpha()
         self.image = pygame.transform.scale((pygame.image.load('docs/imagens/personagem.png')),(50,50)).convert_alpha()
-        self.mask=pygame.mask.from_surface(self.image)
         self.velocidade_x = 0
         self.ajuste = 0
         self.rect=self.image.get_rect(bottomright=(window.get_width()//2, 360))
-        self.tela=tela
-        self.vidas = 3
+        self.vidas =5
         self.jogo=jogo
         self.group=pygame.sprite.GroupSingle(self)
         self.mask=pygame.mask.from_surface(self.image)
@@ -135,7 +134,7 @@ class Personagem(pygame.sprite.Sprite):
                 pygame.quit()
                 self.fechou_no_jogo = True
                 return False
-        if (tela.imprime_x<=-2000 and (self.direcao=='direita' or self.rect.x>=window.get_width()//2)) or (tela.imprime_x>=0 and (self.direcao=='esquerda' or self.rect.x<=window.get_width()//2 )):
+        if (tela.imprime_x<=-2000 and (self.direcao=='direita' or self.rect.x>=window.get_width()//2)) or (tela.imprime_x>=0 and (self.direcao=='esquerda'or self.rect.x<=window.get_width()//2)):
             self.rect.x += self.velocidade_x
 
         else:
@@ -150,7 +149,8 @@ class Personagem(pygame.sprite.Sprite):
                 planta.rect.x-=self.velocidade_x
             for bolinha in tela.bolinhaGroup:
                 bolinha.rect.x-=self.velocidade_x
-        
+            for chao in tela.chaoGroup:
+                chao.rect.x-=self.velocidade_x
         for monstro in tela.grupo_monstro:
             self.movimentação_monstro+=0.05
             if self.movimentação_monstro>=10:
@@ -180,18 +180,21 @@ class Personagem(pygame.sprite.Sprite):
             if bolinha.rect.colliderect(self.rect):
                 bolinha.kill()
                 self.vidas-=1
-        
+    
         for planta in tela.plantaGroup: 
             if planta.rect.colliderect(self.rect):
                 if self.maximo <= planta.rect.top:
                     self.gravidade = -20
                     self.pula.play()
                     planta.kill()
-        if self.rect.x>=1001:
+        
+        if self.rect.x>=1001 and tela.contador_coin>=10:
             self.jogo.tela_atual=3
+            self.jogo.contador_tela=1
+            self.rect.x=0
         return True
     
-    def desenha_jogador(self):
+    def desenha_jogador(self,tela):
         self.coracao = self.fonte.render(chr(9829)*self.vidas,True,(255,0,0))
         window.blit(self.coracao,(0,0))
         self.gravidade+=0.8
@@ -201,8 +204,7 @@ class Personagem(pygame.sprite.Sprite):
             self.maximo=360
         if self.rect.bottom<self.maximo:
             self.maximo=self.rect.bottom
-        for plataforma in self.tela.plataformaGroup:
-            plataforma_mask=pygame.mask.from_surface(self.platafroma_image)
+        for plataforma in tela.plataformaGroup:
             plataforma_group= pygame.sprite.GroupSingle(plataforma)
             if pygame.sprite.spritecollide(self.group.sprite,plataforma_group,False,pygame.sprite.collide_mask) and self.gravidade>=0 and self.maximo<=plataforma.rect.top:
                 self.rect.bottom=plataforma.rect.top+10
@@ -220,11 +222,12 @@ class Jogo:
         pygame.init()
         pygame.display.set_caption('Four Seasons Odyssey')
         self.tela_atual = 0
+        self.telas=[]
         self.font = pygame.font.Font('docs/fontes/PressStart2P.ttf', 20)
         self.window_largura=window.get_width()
-        self.tela=tela.Tela_Inverno(self.font)
-        self.chao=tela.Chao(self.tela.imagem)
-        self.jogador = Personagem(self.tela,self.font,self)
+        self.telas.append(tela_inverno.Tela_Inverno(self.font))
+        self.telas.append(tela_outono.Tela_Outono(self.font))
+        self.jogador = Personagem(self.font,self)
         self.tela_inicio=Tela_Inicio(self)
         self.tela_game_over=Tela_Game_Over(self)
         self.inverteu = False
@@ -244,38 +247,18 @@ class Jogo:
         if self.tela_atual == 2:
             return self.tela_game_over.atualiza_estado_over()
         elif self.tela_atual == 1 or self.tela_atual==3:
-            return self.jogador.movimenta_jogador(self.tela)
-        pygame.mixer.music.stop()
-        if not self.play:
-            self.music.play()
-            self.play=True
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN and self.jogo.jogador.vidas <=0:
-                    return False
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                return False
+            return self.jogador.movimenta_jogador(self.telas[self.contador_tela])
         
 
     def desenha_inicio(self):
-        if self.tela_atual==1:
-            self.tela.desenha_tela()
-            self.chao.desenha_chao()
-            self.tela.desenha_personagens()   
-            self.jogador.desenha_jogador()
+        if self.tela_atual==1 or self.tela_atual==3:
+            self.telas[self.contador_tela].desenha_tela()
+            self.telas[self.contador_tela].desenha_personagens()   
+            self.jogador.desenha_jogador(  self.telas[self.contador_tela])
         elif self.tela_atual==0:
            self.tela_inicio.desenha_Tela_Inicio()
         elif self.tela_atual == 2:
-            self.tela_game_over.desenha_game_over()
-        elif self.tela_atual==3:
-            while self.contador<1:
-                self.tela=tela_outono.Tela_Outono(self.font)
-                self.contador=1
-            self.tela.desenha_tela()
-            self.tela.desenha_personagens()   
-            self.jogador.desenha_jogador()
-           
+            self.tela_game_over.desenha_game_over() 
         pygame.display.update()
 
     def loop(self):

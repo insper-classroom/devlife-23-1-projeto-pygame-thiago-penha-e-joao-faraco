@@ -6,7 +6,7 @@ window = pygame.display.set_mode((1000,409))
 class Bolinha(pygame.sprite.Sprite):   
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/bolinha de neve.png'),(20,20)).convert_alpha()
+        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/bolinha de neve.png'),(30,30)).convert_alpha()
         self.rect=self.image.get_rect()
         self.rect.topleft=(x,y)
 
@@ -34,24 +34,20 @@ class Plataforma(pygame.sprite.Sprite):
         self.rect.topleft=(x,y)
 
 class Chao(pygame.sprite.Sprite):
-    def __init__(self,tela):
-        pygame.sprite.Sprite.__init__(self)
-        self.chao=pygame.transform.scale(pygame.image.load('docs/imagens/chao inverno.png'),(50,50))
-        self.chao_rect=self.chao.get_rect()
-        self.chao_altura=self.chao.get_height()
-        self.chao_largura=self.chao.get_width()
-        self.quantidade= tela.get_width()//self.chao_largura
-        self.tela=tela 
-    def desenha_chao(self):
-        for i in range(self.quantidade+1):
-            self.tela.blit(self.chao,(i*self.chao_largura,360))
+    def __init__(self,x,y):
+         pygame.sprite.Sprite.__init__(self)
+         self.image=pygame.transform.scale(pygame.image.load('docs/imagens/chao inverno.png'),(50,50))
+         self.rect=self.image.get_rect()
+         self.rect.topleft=(x,y)
 
 class Tela_Inverno():
     
     def __init__(self,fonte):
         self.imagem = pygame.transform.scale(pygame.image.load('docs/imagens/Inverno_att.png').convert_alpha(),(3000,410))
+        self.next_level=pygame.transform.scale(pygame.image.load('docs/imagens/next_level.png'),(100,100)).convert_alpha()
         self.arvore=pygame.transform.scale(pygame.image.load('docs/imagens/Arvore_Inverno.png'),(100,100))
         self.moeda_contadora=pygame.transform.scale(pygame.image.load('docs/imagens/coin_2.png'),(50,50)).convert_alpha()
+        self.image = pygame.transform.scale(pygame.image.load('docs/imagens/next_level.png'),(100,100)).convert_alpha()
         self.imprime_x=0   
         self.arvores=[]       
         self.posicao_plat=[]
@@ -63,11 +59,20 @@ class Tela_Inverno():
         self.grupo_monstro= pygame.sprite.Group()
         self.plantaGroup=pygame.sprite.Group()
         self.bolinhaGroup=pygame.sprite.Group()
+        self.chaoGroup=pygame.sprite.Group()
         self.cria_arvore()
         self.cria_plat()
         self.cria_coin()
         self.cria_planta()
         self.cria_monstro()
+        self.desenha_chao()
+  
+    def desenha_chao(self):
+        for i in range(61):
+            x= i*50
+            y=360
+            chao=Chao(x,y)
+            self.chaoGroup.add(chao)
     
     def desenha_bolinha(self):
         self.frequenciadotiro+=0.5
@@ -132,19 +137,18 @@ class Tela_Inverno():
         window.blit(self.moeda_contadora,(900,20))
         self.contador_imagem=self.fonte.render(str(self.contador_coin),True,(0,0,0))
         window.blit(self.contador_imagem,(960,35))
-    
+        self.imagem.blit(self.next_level,(2800,280))
     def desenha_personagens(self):
         self.plataformaGroup.draw(window)
         self.coinGroup.draw(window)
         self.plantaGroup.draw(window)
         self.grupo_monstro.draw(window)
+        self.chaoGroup.draw(window)
         self.desenha_bolinha()
 
 class Monstro(pygame.sprite.Sprite):
     def __init__(self,x,y):
         super().__init__()
-        self.tick=0
         self.image = pygame.transform.scale(pygame.image.load('docs/imagens/monstroatt.png'),(50,50))
         self.rect = self.image.get_rect() 
-        self.rect=self.image.get_rect()
         self.rect.topleft=(x,y)
