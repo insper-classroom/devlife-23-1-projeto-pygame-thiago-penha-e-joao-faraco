@@ -81,7 +81,6 @@ class Tela_Verao():
         for bolinha in self.bolinhaGroup:
             bolinha.rect.x-=3
         self.bolinhaGroup.draw(window)
-        print(self.frequenciadotiro  )
 
     def cria_monstro(self):
         i=0
@@ -110,7 +109,7 @@ class Tela_Verao():
     
     def cria_coin(self):
         j=0
-        while j<15:
+        while j<20:
             posicao_x = random.randint(600, 2450)
             posicao_y = random.randint(100,330)
             coin=Coin(posicao_x,posicao_y)

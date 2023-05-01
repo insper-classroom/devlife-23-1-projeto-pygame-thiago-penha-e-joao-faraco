@@ -29,21 +29,21 @@ class Coin(pygame.sprite.Sprite):
 class Plataforma(pygame.sprite.Sprite):
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
-        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/plat-outono.png'),(150,50)).convert_alpha()
+        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/plataforma_verao.png'),(150,50)).convert_alpha()
         self.rect=self.image.get_rect()
         self.rect.topleft=(x,y)
 
 class Chao(pygame.sprite.Sprite):
     def __init__(self,x,y):
          pygame.sprite.Sprite.__init__(self)
-         self.image=pygame.transform.scale(pygame.image.load('docs/imagens/chao-outono.png'),(50,50))
+         self.image=pygame.transform.scale(pygame.image.load('docs\imagens\chao_verao.png'),(50,50))
          self.rect=self.image.get_rect()
          self.rect.topleft=(x,y)
 
-class Tela_Outono():
+class Tela_Primavera():
     def __init__(self,fonte):
-        self.imagem=pygame.transform.scale(pygame.image.load('docs/imagens/floresta_outono.jpg'),(3000,410)).convert_alpha()
-        self.arvore=pygame.transform.scale(pygame.image.load('docs/imagens/arvore-outono.png'),(80,100))
+        self.imagem=pygame.transform.scale(pygame.image.load('docs/imagens/tela-primavera.png'),(3000,410)).convert_alpha()
+        self.arvore=pygame.transform.scale(pygame.image.load('docs/imagens/arvore_verao.png'),(80,100))
         self.next_level=pygame.transform.scale(pygame.image.load('docs/imagens/next_level.png'),(100,100)).convert_alpha()
         self.moeda_contadora=pygame.transform.scale(pygame.image.load('docs/imagens/coin_2.png'),(50,50)).convert_alpha()
         self.imprime_x=0   
@@ -73,8 +73,8 @@ class Tela_Outono():
             self.chaoGroup.add(chao)
 
     def desenha_bolinha(self):
-        self.frequenciadotiro+=0.5
-        if self.frequenciadotiro%80==0:
+        self.frequenciadotiro+=1
+        if self.frequenciadotiro%300==0:
             for planta in self.plantaGroup:
                 bolinha=Bolinha(planta.rect.x,planta.rect.y+10)
                 self.bolinhaGroup.add(bolinha)
@@ -84,7 +84,7 @@ class Tela_Outono():
 
     def cria_monstro(self):
         i=0
-        while i<8:
+        while i<6:
             posicao_x = random.randint(600, 2450)
             posicao_y = 310
             monstro=Monstro(posicao_x,posicao_y)
@@ -109,7 +109,7 @@ class Tela_Outono():
     
     def cria_coin(self):
         j=0
-        while j<20:
+        while j<15:
             posicao_x = random.randint(600, 2450)
             posicao_y = random.randint(100,330)
             coin=Coin(posicao_x,posicao_y)
@@ -119,7 +119,7 @@ class Tela_Outono():
 
     def cria_planta(self):
          j=0
-         while j<5:
+         while j<3:
             posicao_x = random.randint(1500, 2450)
             posicao_y = 310
             planta=Planta(posicao_x,posicao_y)
