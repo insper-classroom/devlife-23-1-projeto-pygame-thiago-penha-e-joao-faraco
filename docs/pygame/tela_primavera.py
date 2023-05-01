@@ -36,14 +36,14 @@ class Plataforma(pygame.sprite.Sprite):
 class Chao(pygame.sprite.Sprite):
     def __init__(self,x,y):
          pygame.sprite.Sprite.__init__(self)
-         self.image=pygame.transform.scale(pygame.image.load('docs\imagens\chao_verao.png'),(50,50))
+         self.image=pygame.transform.scale(pygame.image.load('docs/imagens/chao_verao.png'),(50,50))
          self.rect=self.image.get_rect()
          self.rect.topleft=(x,y)
 
 class Tela_Primavera():
     def __init__(self,fonte):
         self.imagem=pygame.transform.scale(pygame.image.load('docs/imagens/tela-primavera.png'),(3000,410)).convert_alpha()
-        self.arvore=pygame.transform.scale(pygame.image.load('docs/imagens/arvore_verao.png'),(80,100))
+        self.arvore=pygame.transform.scale(pygame.image.load('docs/imagens/arvore-primaveira.png'),(80,100))
         self.next_level=pygame.transform.scale(pygame.image.load('docs/imagens/next_level.png'),(100,100)).convert_alpha()
         self.moeda_contadora=pygame.transform.scale(pygame.image.load('docs/imagens/coin_2.png'),(50,50)).convert_alpha()
         self.imprime_x=0   
@@ -139,10 +139,10 @@ class Tela_Primavera():
     
     def desenha_personagens(self):
         self.plataformaGroup.draw(window)
-        self.coinGroup.draw(window)
         self.plantaGroup.draw(window)
         self.grupo_monstro.draw(window)
         self.chaoGroup.draw(window)
+        self.coinGroup.draw(window)
         self.desenha_bolinha()
         
 

@@ -36,7 +36,7 @@ class Plataforma(pygame.sprite.Sprite):
 class Chao(pygame.sprite.Sprite):
     def __init__(self,x,y):
          pygame.sprite.Sprite.__init__(self)
-         self.image=pygame.transform.scale(pygame.image.load('docs\imagens\chao_verao.png'),(50,50))
+         self.image=pygame.transform.scale(pygame.image.load('docs/imagens/chao_verao.png'),(50,50))
          self.rect=self.image.get_rect()
          self.rect.topleft=(x,y)
 
@@ -139,10 +139,10 @@ class Tela_Verao():
     
     def desenha_personagens(self):
         self.plataformaGroup.draw(window)
-        self.coinGroup.draw(window)
         self.plantaGroup.draw(window)
         self.grupo_monstro.draw(window)
         self.chaoGroup.draw(window)
+        self.coinGroup.draw(window)
         self.desenha_bolinha()
         
 
