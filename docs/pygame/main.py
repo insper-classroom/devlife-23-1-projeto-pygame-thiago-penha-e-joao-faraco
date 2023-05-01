@@ -2,7 +2,8 @@ import pygame
 import tela_inverno
 from tela_inverno import window
 from tela_inverno import Coin 
-import tela_outono                    
+import tela_outono
+import tela_verao                    
 
 class Tela_Inicio:
     def __init__(self,jogo):
@@ -188,10 +189,14 @@ class Personagem(pygame.sprite.Sprite):
                     self.pula.play()
                     planta.kill()
         
-        if self.rect.x>=1001 and tela.contador_coin>=10:
+        if self.rect.x>=1001 and tela.contador_coin>=10 and self.jogo.tela_atual == 1:
             self.jogo.tela_atual=3
             self.jogo.contador_tela=1
             self.rect.x=0
+        if self.rect.x >= 1001 and tela.contador_coin >= 15 and self.jogo.tela_atual == 3:
+            self.jogo.tela_atual = 4
+            self.jogo.contador_tela = 2
+            self.rect.x = 0
         return True
     
     def desenha_jogador(self,tela):
@@ -227,6 +232,7 @@ class Jogo:
         self.window_largura=window.get_width()
         self.telas.append(tela_inverno.Tela_Inverno(self.font))
         self.telas.append(tela_outono.Tela_Outono(self.font))
+        self.telas.append(tela_verao.Tela_Verao(self.font))
         self.jogador = Personagem(self.font,self)
         self.tela_inicio=Tela_Inicio(self)
         self.tela_game_over=Tela_Game_Over(self)
@@ -246,12 +252,12 @@ class Jogo:
             return self.tela_inicio.atualiza_estado_inicio()
         if self.tela_atual == 2:
             return self.tela_game_over.atualiza_estado_over()
-        elif self.tela_atual == 1 or self.tela_atual==3:
+        elif self.tela_atual == 1 or self.tela_atual==3 or self.tela_atual == 4:
             return self.jogador.movimenta_jogador(self.telas[self.contador_tela])
         
 
     def desenha_inicio(self):
-        if self.tela_atual==1 or self.tela_atual==3:
+        if self.tela_atual==1 or self.tela_atual==3 or self.tela_atual == 4:
             self.telas[self.contador_tela].desenha_tela()
             self.telas[self.contador_tela].desenha_personagens()   
             self.jogador.desenha_jogador(  self.telas[self.contador_tela])
