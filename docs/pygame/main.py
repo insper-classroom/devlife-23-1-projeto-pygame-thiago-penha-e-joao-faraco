@@ -16,6 +16,10 @@ class Tela_Inicio:
         self.rect_inicio = pygame.Rect(400,250,200,80)
         self.jogar_maior = pygame.transform.scale(pygame.image.load('docs/imagens/Jogar2.png'),(205,85))
         self.rect_inicio_maior = pygame.Rect(400,250,205,85)
+        self.como_jogar=pygame.transform.scale(pygame.image.load('docs/imagens/Como jogar.png'),(150,50))
+        self.rect_instrucoes=pygame.Rect(420,340,150,50)
+        self.como_jogar_maior=pygame.transform.scale(pygame.image.load('docs/imagens/Como jogar.png'),(155,55))
+        self.rect_instrucoes_maior=pygame.Rect(420,340,155,55)
         self.contador=0 
         self.saiu_no_inicio = False
 
@@ -24,6 +28,8 @@ class Tela_Inicio:
             if event.type== pygame.MOUSEBUTTONDOWN:
                 self.pos = pygame.mouse.get_pos()
                 if self.rect_inicio.collidepoint(self.pos) or self.rect_inicio_maior.collidepoint(self.pos):
+                    self.jogo.tela_atual=2
+                elif  self.rect_instrucoes.collidepoint(self.pos) or self.rect_instrucoes_maior.collidepoint(self.pos):
                     self.jogo.tela_atual=1
             if event.type == pygame.QUIT:
                     pygame.quit()
@@ -37,18 +43,37 @@ class Tela_Inicio:
             window.blit(self.titulo_maior,(100,1))
             pygame.draw.rect(window,(0,0,0),self.rect_inicio_maior)
             window.blit(self.jogar_maior,(400,250))
+            window.blit(self.como_jogar_maior,(420,340))
         else:
             window.blit(self.imagem_fundo,(0,0))
             pygame.draw.rect(window,(0,0,0),self.rect_inicio)
             window.blit(self.jogar,(400,250))
             window.blit(self.titulo,(100,1))
+            window.blit(self.como_jogar,(420,340))
         if self.contador>=40:
             self.contador=0
-
 class Instrucao:
     def __init__(self,jogo):
         self.jogo=jogo
-    
+        self.image=pygame.transform.scale(pygame.image.load('docs/imagens/instruções.png'),(1000,410))
+        self.voltar=pygame.transform.scale(pygame.image.load('docs/imagens/voltar.pnng.png'),(40,40))
+        self.voltar=pygame.transform.flip(self.voltar, True, False)
+        self.voltar_rect=pygame.Rect(5,0,40,40)
+    def atualiza_instrucao(self):
+        for event in  pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                self.saiu_no_inicio = True
+                return False
+            elif  event.type== pygame.MOUSEBUTTONDOWN:
+                self.pos = pygame.mouse.get_pos()
+                if self.voltar_rect.collidepoint(self.pos):
+                    self.jogo.tela_atual=0
+        return True 
+    def desenha_instrucao(self):
+        window.blit(self.image,(0,0))
+        window.blit(self.voltar,(5,0))
+
 class Tela_Game_Over:
     def __init__(self,jogo):
         self.jogo = jogo
@@ -189,7 +214,7 @@ class Personagem(pygame.sprite.Sprite):
                     self.pula.play()
                     planta.kill()
         
-        if self.rect.x>=1001 and tela.contador_coin>=10 and self.jogo.tela_atual == 1:
+        if self.rect.x>=1001 and tela.contador_coin>=10 and self.jogo.tela_atual == 2:
             self.jogo.tela_atual=3
             self.jogo.contador_tela=1
             self.rect.x=0
@@ -236,6 +261,7 @@ class Jogo:
         self.jogador = Personagem(self.font,self)
         self.tela_inicio=Tela_Inicio(self)
         self.tela_game_over=Tela_Game_Over(self)
+        self.tela_instrucao=Instrucao(self)
         self.inverteu = False
         self.tocou = False
         self.contador=0
@@ -247,24 +273,28 @@ class Jogo:
 
     def atualiza_estado(self): 
         if self.jogador.vidas <= 0:
-            self.tela_atual = 2
+            self.tela_atual = 6
+        if self.tela_atual == 6:
+            return self.tela_game_over.atualiza_estado_over()
+        elif self.tela_atual==1:
+            return self.tela_instrucao.atualiza_instrucao()
         elif self.tela_atual == 0:
             return self.tela_inicio.atualiza_estado_inicio()
-        if self.tela_atual == 2:
-            return self.tela_game_over.atualiza_estado_over()
-        elif self.tela_atual == 1 or self.tela_atual==3 or self.tela_atual == 4:
+        elif self.tela_atual == 2 or self.tela_atual==3 or self.tela_atual == 4:
             return self.jogador.movimenta_jogador(self.telas[self.contador_tela])
         
 
     def desenha_inicio(self):
-        if self.tela_atual==1 or self.tela_atual==3 or self.tela_atual == 4:
+        if self.tela_atual==2 or self.tela_atual==3 or self.tela_atual == 4:
             self.telas[self.contador_tela].desenha_tela()
             self.telas[self.contador_tela].desenha_personagens()   
             self.jogador.desenha_jogador(  self.telas[self.contador_tela])
         elif self.tela_atual==0:
            self.tela_inicio.desenha_Tela_Inicio()
-        elif self.tela_atual == 2:
+        elif self.tela_atual == 6:
             self.tela_game_over.desenha_game_over() 
+        elif self.tela_atual==1:
+            self.tela_instrucao.desenha_instrucao()
         pygame.display.update()
 
     def loop(self):
