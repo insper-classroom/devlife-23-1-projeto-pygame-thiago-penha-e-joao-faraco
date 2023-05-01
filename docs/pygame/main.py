@@ -53,6 +53,7 @@ class Tela_Inicio:
             window.blit(self.como_jogar,(420,340))
         if self.contador>=40:
             self.contador=0
+
 class Instrucao:
     def __init__(self,jogo):
         self.jogo=jogo

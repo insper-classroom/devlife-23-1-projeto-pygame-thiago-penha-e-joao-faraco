@@ -145,12 +145,13 @@ button{
     flex-direction: column;
     align-items: flex-start;
     margin-left: -85px;
+    gap:20px;
 }
 .titulo{
-    margin-top: 20px;
+    margin-top: 10px;
 }
 .video{
-    padding-top: 20px;
+    padding-top:10px;
 }
 .imagens {
     display: flex;
