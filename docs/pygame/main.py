@@ -100,6 +100,20 @@ class Tela_Game_Over:
         window.blit(self.game_over,(0,0))
         window.blit(self.recomecar,(100,206))
 
+class Tela_ganhou:
+    def __init__(self,jogo):
+        self.jogo = jogo
+
+    def atualiza_estado_ganhou(self):
+        for event in pygame.event.get():
+            if event == pygame.QUIT:
+                pygame.quit()
+                return False
+        return True
+    
+    def desenha_ganhou(self):
+        window.fill((124,90,239))
+
 class Personagem(pygame.sprite.Sprite):
    
     def __init__(self,fonte,jogo):
@@ -227,6 +241,9 @@ class Personagem(pygame.sprite.Sprite):
             self.jogo.tela_atual = 5
             self.jogo.contador_tela = 3
             self.rect.x = 0
+            print('entrou')
+        if self.rect.x >= 1001 and tela.contador_coin >= 25 and self.jogo.tela_atual == 5:
+            self.jogo.tela_atual = 7
         return True
     
     def desenha_jogador(self,tela):
@@ -268,6 +285,7 @@ class Jogo:
         self.tela_inicio=Tela_Inicio(self)
         self.tela_game_over=Tela_Game_Over(self)
         self.tela_instrucao=Instrucao(self)
+        self.tela_ganhou = Tela_ganhou(self)
         self.inverteu = False
         self.tocou = False
         self.contador=0
@@ -288,6 +306,8 @@ class Jogo:
             return self.tela_inicio.atualiza_estado_inicio()
         elif self.tela_atual == 2 or self.tela_atual==3 or self.tela_atual == 4 or self.tela_atual == 5:
             return self.jogador.movimenta_jogador(self.telas[self.contador_tela])
+        elif self.tela_atual == 7:
+            return self.tela_ganhou.atualiza_estado_ganhou()
         
 
     def desenha_inicio(self):
@@ -301,6 +321,8 @@ class Jogo:
             self.tela_game_over.desenha_game_over() 
         elif self.tela_atual==1:
             self.tela_instrucao.desenha_instrucao()
+        elif self.tela_atual == 7:
+            self.tela_ganhou.desenha_ganhou()
         pygame.display.update()
 
     def loop(self):
