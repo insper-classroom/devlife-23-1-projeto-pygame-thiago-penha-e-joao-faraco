@@ -93,7 +93,7 @@ main {
 #Descricao{
     font-size: x-large;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     padding: 20px;
     gap: 20px;
     position: relative;
@@ -115,9 +115,10 @@ main {
 }
 
 button{
-    margin-left: 50%;
-    width:120px;
+    width:0px;
+    border: 0px;
     height:40px;
+    background-color: linear-gradient(90deg, rgb(83, 90, 102) 35%, rgb(125, 131, 145) 100%);
     
 }
 
@@ -125,10 +126,10 @@ button{
     max-width:15%;
     max-height:30%;
 }
-.download img {
-    margin-top: 350px;
+.download img {     
     width: 200px;
-    margin-left: -735px;
+
+
 }
 #Gameplay{
     height:1500px;
