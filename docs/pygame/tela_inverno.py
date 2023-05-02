@@ -1,7 +1,7 @@
 import pygame 
 import random
 
-window = pygame.display.set_mode((1000,409))      
+window = pygame.display.set_mode((1000,410))      
 
 class Bolinha(pygame.sprite.Sprite):   
     def __init__(self,x,y):

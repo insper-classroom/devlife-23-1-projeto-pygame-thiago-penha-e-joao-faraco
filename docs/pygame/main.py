@@ -104,16 +104,20 @@ class Tela_Game_Over:
 class Tela_ganhou:
     def __init__(self,jogo):
         self.jogo = jogo
-
+        self.image=pygame.transform.scale((pygame.image.load('docs/imagens/tela-vitoria.png')),(1000,410)).convert_alpha()
+        self.contador=0
     def atualiza_estado_ganhou(self):
         for event in pygame.event.get():
-            if event == pygame.QUIT:
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 return False
         return True
     
     def desenha_ganhou(self):
-        window.fill((124,90,239))
+        self.contador+=0.1
+        window.fill((0,0,0))
+        window.blit(self.image,(0,0))
+
 
 class Personagem(pygame.sprite.Sprite):
    

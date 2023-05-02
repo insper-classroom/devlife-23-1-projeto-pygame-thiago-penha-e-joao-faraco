@@ -145,7 +145,6 @@ class Tela_Outono():
         self.chaoGroup.draw(window)
         self.desenha_bolinha()
         
-
 class Monstro(pygame.sprite.Sprite):
     def __init__(self,x,y):
         super().__init__()
