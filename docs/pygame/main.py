@@ -58,7 +58,7 @@ class Instrucao:
     def __init__(self,jogo):
         self.jogo=jogo
         self.image=pygame.transform.scale(pygame.image.load('docs/imagens/instruções.png'),(1000,410))
-        self.voltar=pygame.transform.scale(pygame.image.load('docs/imagens/voltar.pnng.png'),(40,40))
+        self.voltar=pygame.transform.scale(pygame.image.load('docs/imagens/voltar.pnng.png'),(25,25))
         self.voltar=pygame.transform.flip(self.voltar, True, False)
         self.voltar_rect=pygame.Rect(5,0,40,40)
     def atualiza_instrucao(self):
@@ -106,7 +106,7 @@ class Tela_ganhou:
         self.jogo = jogo
         self.image=pygame.transform.scale((pygame.image.load('docs/imagens/tela-vitoria.png')),(1000,410)).convert_alpha()
         self.contador=0
-        self.music = pygame.mixer.Sound('docs\sons\Cant Stop Winning.mp3')
+        self.music = pygame.mixer.Sound('docs/sons/Cant Stop Winning.mp3')
         self.play = False
     def atualiza_estado_ganhou(self):
         pygame.mixer.music.stop()
