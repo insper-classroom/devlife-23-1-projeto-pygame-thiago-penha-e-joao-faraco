@@ -242,7 +242,6 @@ class Personagem(pygame.sprite.Sprite):
             self.jogo.tela_atual = 5
             self.jogo.contador_tela = 3
             self.rect.x = 0
-            print('entrou')
         if self.rect.x >= 1001 and tela.contador_coin >= 25 and self.jogo.tela_atual == 5:
             self.jogo.tela_atual = 7
         return True
