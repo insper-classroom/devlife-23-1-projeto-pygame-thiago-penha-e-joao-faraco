@@ -137,14 +137,13 @@ button{
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    justify-content: center;
     background: linear-gradient(90deg, rgb(83, 90, 102) 35%, rgb(125, 131, 145) 100%);
+    padding: 0px 20px;
 }
 .titulo-video{
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-left: -5%;
     gap:50px;
 }
 .titulo{
