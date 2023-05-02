@@ -106,7 +106,13 @@ class Tela_ganhou:
         self.jogo = jogo
         self.image=pygame.transform.scale((pygame.image.load('docs/imagens/tela-vitoria.png')),(1000,410)).convert_alpha()
         self.contador=0
+        self.music = pygame.mixer.Sound('docs\sons\Cant Stop Winning.mp3')
+        self.play = False
     def atualiza_estado_ganhou(self):
+        pygame.mixer.music.stop()
+        if not self.play:
+            self.music.play()
+            self.play=True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
